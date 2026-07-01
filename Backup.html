@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Financial Lease Calculator | Thai ORIX</title>
+
+<style>
+:root {
+  --blue:#01478c; --blue-mid:#0158a8; --blue-dim:#e8f0f9; --blue-soft:#c8ddf5;
+  --bg:#eaecf0; --surface:#ffffff; --surface2:#f4f6fa; --surface3:#f7f9fc;
+  --border:#dde2ea; --border2:#c8d0dc;
+  --txt:#0d1b2e; --muted:#6b7585; --muted2:#475264;
+  --green:#22a37d; --green-dim:#e6f5f0; --amber:#e8a020; --amber-dim:#fef3e2;
+  --red:#c0021a; --red-dim:#fde8eb; --purple:#6d28d9;
+  --font:Calibri,Arial,sans-serif;
+  --mono:Calibri,Consolas,monospace;
+  --rad:10px; --rad-sm:6px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --shadow:0 2px 8px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.04);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{background:var(--bg);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh;}
+.app{max-width:1220px;margin:0 auto;padding:24px 18px 100px;}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.ph-left h1{font-size:21px;font-weight:700;letter-spacing:-0.3px;color:var(--txt);line-height:1.2;}
+.ph-left h1 span{color:var(--blue);}
+.ph-left p{color:var(--muted);font-size:12px;margin-top:3px;}
+.ph-badge{display:inline-flex;align-items:center;gap:6px;background:var(--blue-dim);color:var(--blue);font-size:11px;font-weight:600;padding:5px 10px;border-radius:20px;border:1px solid var(--blue-soft);white-space:nowrap;flex-shrink:0;}
+.grid-main{display:grid;grid-template-columns:1fr 360px;gap:16px;}
+@media(max-width:920px){.grid-main{grid-template-columns:1fr;}}
+
+/* ─── Card ─── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:0;box-shadow:var(--shadow-sm);overflow:hidden;}
+.card+.card{margin-top:10px;}
+.card-hdr{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+  font-size:10px;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);font-weight:700;
+}
+.card-hdr .ch-icon{
+  width:22px;height:22px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;
+}
+.ch-green{background:#d4f0e7;color:var(--green);}
+.ch-blue{background:#d8e8f6;color:var(--blue);}
+.ch-amber{background:#fdeec7;color:#a06000;}
+.ch-purple{background:#ede8fb;color:var(--purple);}
+.ch-slate{background:#e4e7ed;color:#445;}
+.card-body{padding:12px 14px;}
+.card-sect{padding:10px 14px;border-bottom:1px solid var(--border);}
+.card-sect:last-child{border-bottom:none;}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.form-row.c3{grid-template-columns:1fr 1fr 1fr;}
+.form-row.c1{grid-template-columns:1fr;}
+.form-row.last{margin-bottom:0;}
+.field{display:flex;flex-direction:column;gap:3px;}
+.field label{font-size:10.5px;color:var(--muted2);font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:5px;}
+.field label .hint{color:var(--muted);font-weight:400;}
+.field input,.field select{
+  background:var(--surface);color:var(--txt);border:1px solid var(--border);
+  border-radius:var(--rad-sm);padding:7px 10px;font-size:13px;font-family:var(--font);
+  transition:border-color .15s,box-shadow .15s,background .15s;outline:none;width:100%;
+}
+.field input:hover,.field select:hover{border-color:var(--border2);}
+.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(1,71,140,.10);background:#fff;}
+.field input[readonly]{color:#98a2b3;background:#f9fafb;cursor:default;}
+.field select{cursor:pointer;}
+.field.mono input{font-family:var(--mono);font-size:13px;}
+.field.highlight input{color:var(--blue);font-weight:700;font-family:var(--mono);}
+input[type=number]{appearance:textfield;text-align:right;}
+input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.2);}
+.field input.editable,.field select.editable{border-color:var(--border);}
+.field input.editing,.field select.editing{background:var(--blue-dim);border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(1,71,140,.10);}
+.field input::placeholder{color:#b0b8c8;}
+.term-unit-sel{font-size:10px!important;padding:2px 6px!important;border-radius:4px!important;border:1px solid var(--border)!important;background:var(--surface3)!important;cursor:pointer;height:auto!important;width:auto!important;font-family:var(--font)!important;color:var(--blue)!important;font-weight:700!important;}
+/* Checkboxes */
+.chk-group{display:flex;flex-direction:column;gap:5px;margin-top:4px;}
+.chk-row{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--txt);cursor:pointer;user-select:none;padding:4px 8px;border-radius:var(--rad-sm);background:var(--surface3);border:1px solid var(--border);transition:background .1s;}
+.chk-row:hover{background:var(--blue-dim);}
+.chk-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;}
+.divider{height:1px;background:var(--border);margin:10px 0;}
+.sect-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px dashed var(--border2);}
+.pmt-hero{background:linear-gradient(140deg,#0a3a72 0%,#01478c 60%,#0268b8 100%);border-radius:var(--rad);padding:18px 16px;text-align:center;margin-bottom:10px;box-shadow:0 4px 16px rgba(1,71,140,.22);}
+.pmt-hero .label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.6);margin-bottom:4px;font-weight:600;}
+.pmt-hero .value{font-family:var(--mono);font-size:34px;font-weight:500;color:#fff;letter-spacing:-1px;line-height:1;}
+.pmt-hero .sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:5px;}
+.result-grid{display:flex;flex-direction:column;gap:3px;}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:var(--rad-sm);background:var(--surface3);transition:background .1s;}
+.result-row:hover{background:var(--blue-dim);}
+.result-row .rl{font-size:11px;color:var(--muted2);}
+.result-row .rv{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--txt);}
+.result-row.key{background:var(--blue-dim);}
+.result-row.key .rl{color:var(--blue);font-weight:700;}
+.result-row.key .rv{color:var(--blue);font-weight:700;font-size:15px;}
+.result-row.sep{background:none;padding:3px 10px 1px;}
+.result-row.sep .rl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);border-top:1px dashed var(--border2);padding-top:4px;width:100%;}
+.ws-table{width:100%;border-collapse:collapse;}
+.ws-table th{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:5px 10px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);}
+.ws-table td{padding:7px 10px;font-size:12.5px;font-family:var(--mono);font-weight:500;border-bottom:1px solid var(--border);}
+.ws-table tr:last-child td{border-bottom:none;}
+.ws-table td:not(:first-child){text-align:right;}
+.goal-seek-section{background:linear-gradient(135deg,#fffbf0,#fff8e6);border:1px solid #f0d898;border-radius:var(--rad-sm);padding:12px;}
+.gs-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.gs-header .gs-icon{width:26px;height:26px;background:var(--amber);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.gs-header .gs-title{font-size:11.5px;font-weight:700;color:#7a4e00;}
+.gs-header .gs-sub{font-size:10px;color:#a06820;margin-top:1px;}
+.gs-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:flex-end;}
+/* Contract conditions box */
+.contract-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rad-sm);padding:12px;margin-top:10px;}
+.contract-box .cb-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
+button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;border:none;border-radius:var(--rad-sm);padding:9px 16px;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
+.btn-primary{background:var(--green);color:#fff;box-shadow:0 1px 3px rgba(34,163,125,.3);}
+.btn-primary:hover{background:#1a8f6c;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:#003a78;}
+.btn-amber{background:var(--amber);color:#3d2600;}
+.btn-amber:hover{background:#d0900e;}
+.btn-ghost{background:#fff;color:var(--muted2);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--txt);border-color:var(--border2);background:var(--surface3);}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-danger:hover{background:#a50016;}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.kbd-hint{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);margin-top:7px;}
+.kbd{background:var(--surface3);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:10px;color:var(--muted2);}
+#policyWarnings{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap;}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.pill.warn{background:var(--amber-dim);color:#8a5000;border:1px solid #f0d090;}
+.pill.err{background:var(--red-dim);color:#8c0018;border:1px solid #f0b0b8;}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);font-family:var(--font);font-size:13px;padding:10px 18px 10px 14px;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.18);pointer-events:none;opacity:0;transition:all .25s cubic-bezier(.34,1.3,.64,1);z-index:9999;max-width:92vw;text-align:center;display:flex;align-items:center;gap:8px;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.success{background:#0d3d22;color:#7eeabc;border:1px solid rgba(110,220,166,.3);}
+#toast.error{background:#3a0810;color:#f7a0aa;border:1px solid rgba(220,60,80,.3);}
+
+/* ===== QUOTATION — A4 PAGE LAYOUT ===== */
+
+/* Outer wrapper: grey "desk" background to frame the paper */
+.quote-section-outer{
+  margin-top:28px;
+  background:#c8cbd2;
+  border-radius:6px;
+  padding:28px 20px 32px;
+}
+
+/* Controls bar above the paper */
+.quote-controls{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 12px 14px;
+  font-size:12px;color:var(--muted2);
+}
+.quote-controls label{font-weight:600;}
+.quote-controls select{padding:4px 8px;border:1px solid var(--border);border-radius:var(--rad-sm);font-size:12px;font-family:var(--font);background:#fff;cursor:pointer;}
+.quote-controls .spacer{flex:1;}
+
+/* The "paper" itself — A4 proportions on screen */
+.quote-wrap{
+  background:#fff;
+  border:1px solid #b0b4bc;
+  border-radius:2px;
+  overflow:hidden;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.08),
+    0 4px 12px rgba(0,0,0,.12),
+    0 12px 32px rgba(0,0,0,.10),
+    0 24px 56px rgba(0,0,0,.07);
+  font-family:Calibri,Arial,sans-serif;
+  width:100%;
+  max-width:794px;
+  margin:0 auto;
+  aspect-ratio:210/297;
+  position:relative;
+}
+
+/* Inner page content — flex column, fills 100% height of paper */
+.q-page{
+  width:100%;
+  height:100%;
+  position:absolute;
+  top:0;left:0;
+  /* margins: 22mm top, 20mm sides, 18mm bottom — comfortable A4 margins */
+  padding:2.8% 3.2% 2.4%;
+  background:#fff;
+  font-size:11.5px;
+  color:#111;
+  line-height:1.65;
+  font-family:Calibri,Arial,sans-serif;
+  display:flex;
+  flex-direction:column;
+}
+
+/* Body grows to fill remaining height */
+.q-body{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+/* Flex spacers — distribute blank space evenly between content blocks */
+.q-sp{flex:1;min-height:0;}          /* small spacer (between most blocks) */
+.q-sp-lg{flex:2;min-height:0;}       /* larger spacer (above signature) */
+
+/* ── Header ── */
+.q-hdr{
+  display:grid;grid-template-columns:98px 1fr auto;
+  align-items:flex-start;
+  padding-bottom:7px;
+  border-bottom:2px solid #111;
+}
+.q-hdr-logo img{height:60px;width:auto;display:block;}
+.q-hdr-company{padding-left:12px;}
+.q-co-name{font-size:15px;font-weight:700;color:#111;line-height:1.2;margin-bottom:4px;}
+.q-addr-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;font-size:9.5px;color:#333;line-height:1.6;}
+.q-addr-title{font-weight:700;color:#111;font-size:9.5px;}
+.q-hdr-right{text-align:right;min-width:140px;}
+.q-doctype{font-size:30px;font-weight:700;color:#111;letter-spacing:1px;line-height:1;}
+.q-docsub{font-size:13px;font-weight:600;color:#444;text-align:right;margin-top:3px;}
+
+/* ── Info row ── */
+.q-inforow{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  padding:8px 0 7px;
+  border-bottom:1px solid #ccc;
+  font-size:10.5px;
+}
+.q-infocell{display:flex;gap:4px;align-items:baseline;}
+.q-infocell .qi-label{color:#444;white-space:nowrap;}
+.q-infocell .qi-val{font-weight:700;color:#111;}
+.q-docinfo{font-size:10px;color:#333;line-height:1.8;}
+.q-docinfo .di-row{display:flex;gap:4px;}
+.q-docinfo .di-k{min-width:118px;color:#444;}
+.q-docinfo .di-v{font-weight:600;color:#111;}
+
+.q-intro{font-size:10.5px;color:#333;line-height:1.6;}
+.q-baht-label{text-align:right;font-size:9.5px;color:#555;margin-bottom:3px;}
+
+/* ── Main table ── */
+.q-tbl{
+  width:100%;border-collapse:collapse;
+  border:1px solid #999;
+  font-size:10px;
+}
+.q-tbl thead th{
+  background:#e6ecf4;border:1px solid #999;
+  padding:7px 4px;font-weight:700;text-align:center;vertical-align:middle;
+  font-size:9.5px;line-height:1.4;color:#111;
+}
+.q-tbl tbody td{
+  border:1px solid #ccc;
+  padding:9px 4px;
+  vertical-align:middle;font-size:10.5px;color:#111;
+}
+.q-tbl td.num{text-align:right;font-family:Calibri,Consolas,monospace;font-size:10px;}
+.q-tbl td.ctr{text-align:center;}
+
+/* ── Rate box ── */
+.q-ratebox{border:1px solid #999;}
+.q-ratebox table{width:100%;border-collapse:collapse;font-size:10px;}
+.q-ratebox table td{padding:6px 10px;vertical-align:middle;}
+.rb-key{color:#333;white-space:nowrap;width:122px;}
+.rb-sep{width:10px;text-align:center;color:#555;}
+.rb-val{color:#111;}
+.rb-gap{width:18px;}
+
+.q-subject{font-size:10.5px;font-weight:700;color:#111;}
+.q-terms-hdr{font-size:10.5px;font-weight:700;text-decoration:underline;color:#111;margin-bottom:4px;}
+.q-terms ol{padding-left:15px;font-size:10.5px;color:#222;line-height:1.7;}
+.q-terms li{margin-bottom:7px;}
+.q-terms ul{padding-left:15px;margin-top:4px;}
+.q-terms ul li{margin-bottom:3px;}
+
+/* ── Signature — bottom of page ── */
+.q-sign{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:32px;
+  border-top:1px solid #ddd;
+  padding-top:7px;
+}
+.q-sign-col{display:flex;flex-direction:column;min-height:90px;}
+.q-sign-intro{font-size:10px;color:#333;line-height:1.75;white-space:pre-line;text-align:center;margin-bottom:0;}
+.q-sign-spacer{flex:1;min-height:48px;}
+.q-sign-line{border-top:1px solid #444;width:100%;margin-bottom:4px;}
+.q-sign-name-block{text-align:center;}
+.q-sign-name{font-size:11px;font-weight:700;color:#111;}
+.q-sign-role{font-size:9.5px;color:#555;}
+.q-sign-row{font-size:10px;color:#333;display:flex;gap:8px;align-items:baseline;margin-top:3px;}
+.q-sign-row .sk{min-width:62px;color:#444;}
+.q-sign-row .sv{font-weight:700;color:#111;}
+
+/* ── PRINT ── */
+@media print{
+  @page{size:A4 portrait;margin:10mm 12mm;}
+  .no-print,#toast,.quote-controls,.page-header,.grid-main,.btn-row,
+  .quote-section-outer > .no-print{display:none!important;}
+  html,body{background:#fff!important;font-family:Calibri,Arial,sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .app{padding:0!important;margin:0!important;max-width:100%!important;}
+  .quote-section-outer{background:#fff!important;padding:0!important;margin:0!important;}
+  .quote-wrap{
+    border:none!important;box-shadow:none!important;border-radius:0!important;
+    max-width:100%!important;width:100%!important;
+    aspect-ratio:unset!important;
+    position:static!important;
+  }
+  .q-page{
+    position:static!important;
+    height:auto!important;
+    min-height:calc(297mm - 20mm)!important;
+    padding:0!important;
+    font-size:8.5pt!important;
+  }
+  .q-hdr-logo img{height:46px!important;}
+  .q-co-name{font-size:11pt!important;}
+  .q-doctype{font-size:20pt!important;}
+  .q-addr-cols,.q-inforow{font-size:7.5pt!important;}
+  .q-tbl thead th{font-size:7pt!important;padding:3px 2px!important;}
+  .q-tbl tbody td{font-size:7.5pt!important;padding:5px 3px!important;}
+  .q-ratebox table td{font-size:7.5pt!important;padding:3px 6px!important;}
+  .q-intro{font-size:8pt!important;}
+  .q-terms ol,.q-terms-hdr,.q-subject{font-size:7.5pt!important;}
+  .q-sp,.q-sp-lg{display:none!important;}
+  .q-sign{margin-top:auto!important;border-top:1px solid #ccc!important;}
+  tr,.q-sign{page-break-inside:avoid;}
+}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+<div class="app">
+
+  <div class="page-header no-print">
+    <div class="ph-left">
+      <h1>Financial <span>Lease</span> Calculator</h1>
+      <p>Thai ORIX Leasing Co., Ltd. — คำนวณสัญญาเช่าซื้อ / ลิสซิ่ง พร้อมออกใบเสนอราคา</p>
+    </div>
+    <div class="ph-badge">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      v3.4 — Flat &amp; IRR
+    </div>
+  </div>
+
+  <div class="grid-main no-print">
+    <div class="left-col">
+
+      <div class="card">
+        <div class="card-hdr"><span class="ch-icon ch-green">👤</span>ข้อมูลลูกค้า &amp; เอกสาร</div>
+        <div class="card-body">
+        <div class="form-row">
+          <div class="field"><label>ชื่อลูกค้า</label><input id="custName" placeholder="ระบุชื่อลูกค้า"/></div>
+          <div class="field"><label>ผู้เสนอราคา (MKT)</label><input id="fromName" placeholder="ชื่อ MKT"/></div>
+        </div>
+        <div class="form-row c3 last">
+          <div class="field"><label>เลขที่ใบเสนอราคา</label><input id="quotationNo" placeholder="ระบุถ้ามี"/></div>
+          <div class="field"><label>วันที่ออกเอกสาร</label><input id="issueDate" type="date"/></div>
+          <div class="field"><label>อายุใบเสนอ <span class="hint">(วัน)</span></label><input id="validDays" type="number" min="0" step="1" inputmode="numeric" value="30"/></div>
+        </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><span class="ch-icon ch-blue">🚗</span>ทรัพย์สิน / รถยนต์</div>
+        <div class="card-body">
+        <div class="form-row">
+          <div class="field"><label>รุ่นรถ</label><input id="assetName" placeholder="เช่น Zeekr 009 6 Seat"/></div>
+          <div class="field"><label>สี</label><input id="assetColor" placeholder="เช่น ขาว Pearl"/></div>
+        </div>
+        <div class="form-row last">
+          <div class="field"><label>จำนวน <span class="hint">(คัน)</span></label><input id="assetQty" type="number" min="1" step="1" inputmode="numeric" value=""/></div>
+          <div></div>
+        </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><span class="ch-icon ch-amber">💰</span>ราคา &amp; VAT</div>
+        <div class="card-body">
+        <div class="form-row c3">
+          <div class="field mono"><label>Gross Price <span class="hint">(รวม VAT)</span></label><input id="gross" type="number" min="0" step="1" inputmode="numeric" value="0" placeholder="3,890,000"/></div>
+          <div class="field mono"><label>ส่วนลด <span class="hint">(−)</span></label><input id="discount" type="number" min="0" step="1" inputmode="numeric" value="0"/></div>
+          <div class="field mono"><label>Option <span class="hint">(+)</span></label><input id="optionPlus" type="number" min="0" step="1" inputmode="numeric" value="0"/></div>
+        </div>
+        <div class="form-row last">
+          <div class="field"><label>VAT <span class="hint">(%)</span></label><input id="vatPct" type="number" min="0" step="0.01" inputmode="decimal" value="7"/></div>
+          <div class="field">
+            <label>ระยะเวลา <select id="termUnit" class="term-unit-sel"><option value="years" selected>ปี</option><option value="months">เดือน</option></select></label>
+            <input id="termVal" type="number" min="0" step="1" inputmode="decimal" value="5"/>
+          </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><span class="ch-icon ch-purple">⬇</span>เงินดาวน์ &amp; Balloon</div>
+        <div class="card-sect">
+          <div class="form-row last">
+            <div class="field"><label>ประเภทดาวน์</label><select id="downType"><option value="amount" selected>จำนวนเงิน (บาท)</option><option value="percent">เปอร์เซ็นต์ (%)</option></select></div>
+            <div class="field mono highlight"><label>ค่าเงินดาวน์</label><input id="downInput" type="number" min="0" step="0.01" inputmode="decimal" value="0"/></div>
+          </div>
+        </div>
+        <div class="card-sect">
+          <div class="form-row" style="margin-bottom:0">
+            <div class="field"><label>Balloon</label><select id="balloonEnable"><option value="false" selected>ไม่มี Balloon</option><option value="true">มี Balloon</option></select></div>
+            <div id="balloonTypeField" style="display:none"><div class="field"><label>ประเภท Balloon</label><select id="balloonType"><option value="amount" selected>จำนวนเงิน (บาท)</option><option value="percent">เปอร์เซ็นต์ (%)</option></select></div></div>
+          </div>
+          <div id="balloonFields" style="display:none;margin-top:8px">
+            <div class="field mono last"><label>ค่า Balloon</label><input id="balloonInput" type="number" min="0" step="0.01" inputmode="decimal" value="0"/></div>
+          </div>
+          <div id="policyWarnings"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr"><span class="ch-icon ch-green">📐</span>โหมดคำนวณ &amp; คอมมิชชั่น</div>
+
+        <div class="card-sect">
+          <div class="form-row" style="margin-bottom:0">
+            <div class="field"><label>โหมดคำนวณ</label><select id="mode"><option value="Flat" selected>Flat Rate</option><option value="IRR">IRR Mode</option></select></div>
+            <div class="field mono"><label>Flat Rate <span class="hint">(% ต่อปี)</span></label><input id="flatRate" type="number" step="0.0001" inputmode="decimal" value="0" placeholder="7.7800"/></div>
+          </div>
+          <div class="form-row last" id="irrRow" style="display:none;margin-top:8px">
+            <div class="field mono"><label>IRR Target <span class="hint">(% ต่อปี)</span></label><input id="irrTargetPct" type="number" step="0.0001" inputmode="decimal" value="5.75"/></div>
+            <div style="display:flex;align-items:flex-end"><button class="btn-blue btn-sm" id="btnSolveIRR" type="button" style="width:100%">⚡ คำนวณ Flat จาก IRR</button></div>
+          </div>
+        </div>
+
+        <div class="card-sect">
+          <div class="sect-label">Commission</div>
+          <div class="form-row c3 last">
+            <div class="field"><label>ฐานค่าคอม</label><select id="commBaseChoice"><option value="interest">ดอกเบี้ยรวม</option><option value="finance" selected>ยอดจัด</option></select></div>
+            <div class="field mono"><label>% ค่าคอม</label><input id="commPct" type="number" min="0" step="0.01" inputmode="decimal" value="0"/></div>
+            <div class="field mono"><label>Extra คอม <span class="hint">(บาท)</span></label><input id="commExtra" type="number" min="0" step="1" inputmode="numeric" value="0"/></div>
+          </div>
+        </div>
+
+        <div class="card-sect">
+          <div class="sect-label">🎯 Goal Seek</div>
+          <div class="goal-seek-section">
+            <div class="gs-header">
+              <div class="gs-icon">🎯</div>
+              <div>
+                <div class="gs-title">หาเงินดาวน์จากค่างวดเป้าหมาย</div>
+                <div class="gs-sub">คำนวณเงินดาวน์ที่แน่นอน ให้ได้ค่างวดตามต้องการ</div>
+              </div>
+            </div>
+            <div class="gs-row">
+              <div class="field mono"><label>ค่างวด/เดือนเป้าหมาย <span class="hint">(รวม VAT)</span></label><input id="targetMonthlyInc" type="number" min="0" step="1" inputmode="numeric" placeholder="เช่น 36,000"/></div>
+              <button class="btn-amber btn-sm" id="btnGoalSeek" type="button" style="height:38px">คำนวณ</button>
+            </div>
+            <div class="kbd-hint"><kbd class="kbd">Ctrl</kbd>+<kbd class="kbd">Enter</kbd> &nbsp;Goal Seek</div>
+          </div>
+        </div>
+
+        <div class="card-sect">
+          <div class="sect-label">เงื่อนไขสัญญา / Contract Conditions</div>
+          <div class="form-row last">
+            <div class="field">
+              <label style="margin-bottom:4px">ผู้ค้ำประกัน (Guarantor)</label>
+              <div class="chk-group">
+                <label class="chk-row"><input type="checkbox" id="guar_none" checked onchange="onGuarNone(this)"/><span>- (ไม่มี / None)</span></label>
+                <label class="chk-row"><input type="checkbox" id="guar_personal" onchange="onGuarCheck(this)"/><span>Personal (Director)</span></label>
+                <label class="chk-row"><input type="checkbox" id="guar_corporate" onchange="onGuarCheck(this)"/><span>Corporate Guarantee</span></label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Payment Method</label>
+              <select id="paymentMethod">
+                <option value="transfer" selected>Bank Transfer</option>
+                <option value="cheque_all">Post Date Cheque – All Contract</option>
+                <option value="cheque_12">Post Date Cheque – 12M Roll Over</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-primary" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          พิมพ์ใบเสนอราคา
+        </button>
+        <button class="btn-ghost" onclick="exportExcel()">📊 Export Excel</button>
+        <button class="btn-danger" onclick="resetAll()">↺ รีเซ็ต</button>
+      </div>
+    </div>
+
+    <div class="right-col">
+      <div class="pmt-hero">
+        <div class="label">ค่างวด / เดือน (ปัดขึ้น)</div>
+        <div class="value" id="pmtRounded">—</div>
+        <div class="sub">รวม VAT &nbsp;·&nbsp; <span id="months_hero">— งวด</span></div>
+      </div>
+      <div class="card">
+        <div class="card-hdr"><span class="ch-icon ch-green">📊</span>ผลลัพธ์การคำนวณ</div>
+        <div class="card-body" style="padding:10px 12px">
+        <div class="result-grid">
+          <div class="result-row sep"><span class="rl">ราคา &amp; ยอดจัด</span></div>
+          <div class="result-row"><span class="rl">ราคาสุทธิ (Net Price)</span><span class="rv" id="netPrice">—</span></div>
+          <div class="result-row"><span class="rl">เงินดาวน์</span><span class="rv" id="downBaht">—</span></div>
+          <div class="result-row"><span class="rl">Balloon</span><span class="rv" id="balloonBaht">—</span></div>
+          <div class="result-row"><span class="rl">ยอดจัด (Finance)</span><span class="rv" id="finance">—</span></div>
+          <div class="result-row"><span class="rl">จำนวนงวด</span><span class="rv" id="months">—</span></div>
+          <div class="result-row"><span class="rl">ยอดจัด − Balloon</span><span class="rv" id="finMinusBalloon">—</span></div>
+          <div class="result-row sep"><span class="rl">ค่างวด &amp; ดอกเบี้ย</span></div>
+          <div class="result-row"><span class="rl">ดอกเบี้ยรวม (Flat)</span><span class="rv" id="totalInterest">—</span></div>
+          <div class="result-row key"><span class="rl">ค่างวด/เดือน (รวม VAT) ↑</span><span class="rv" id="pmtInc">—</span></div>
+          <div class="result-row sep"><span class="rl">คอม &amp; ผลตอบแทน</span></div>
+          <div class="result-row"><span class="rl">คอมมิชชั่น</span><span class="rv" id="commission">—</span></div>
+          <div class="result-row"><span class="rl">IRR (รวมคอม) ต่อปี</span><span class="rv" id="irr">—</span></div>
+          <div class="result-row"><span class="rl">TR ลูกค้า ต่อปี</span><span class="rv" id="trCustomer">—</span></div>
+        </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:10px">
+        <div class="card-hdr"><span class="ch-icon ch-amber">📋</span>OWS Working Sheet</div>
+        <div class="card-body" style="padding:8px 12px">
+        <table class="ws-table" id="ws_table">
+          <thead><tr><th>รายการ</th><th>Ex. VAT</th><th>Inc. VAT</th></tr></thead>
+          <tbody>
+            <tr><td>Net Price</td><td id="ws_net_ex">—</td><td id="ws_net_inc">—</td></tr>
+            <tr><td>Deposit</td><td id="ws_dep_ex">—</td><td id="ws_dep_inc">—</td></tr>
+            <tr><td>Finance</td><td id="ws_fin_ex">—</td><td id="ws_fin_inc">—</td></tr>
+            <tr><td>Monthly PMT ↑</td><td id="ws_pmt_ex">—</td><td id="ws_pmt_inc">—</td></tr>
+            <tr><td>Commission</td><td id="ws_comm_ex">—</td><td id="ws_comm_inc">—</td></tr>
+            <tr><td>RV (Dep+Balloon)</td><td id="ws_rv_ex">—</td><td id="ws_rv_inc">—</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ QUOTATION — A4 PAGE ═══════ -->
+  <div class="quote-section-outer" id="quoteSection">
+
+    <!-- Controls bar (hidden on print) -->
+    <div class="quote-controls no-print">
+      <label>ภาษา / Language</label>
+      <select id="quoteLang"><option value="EN" selected>English</option><option value="TH">ภาษาไทย</option></select>
+      <div class="spacer"></div>
+      <button class="btn-ghost btn-sm" onclick="exportExcel()">📊 Export Excel</button>
+      <button class="btn-primary btn-sm" onclick="window.print()">🖨 Print</button>
+    </div>
+
+    <!-- Paper sheet -->
+    <div class="quote-wrap">
+      <div class="q-page">
+
+        <!-- ── HEADER ── -->
+        <div class="q-hdr">
+          <div class="q-hdr-logo"><img id="q_logo" src="orix_logo.png" alt="ORIX"/></div>
+          <div class="q-hdr-company">
+            <div class="q-co-name" id="q_co_name">THAI ORIX LEASING CO., LTD.</div>
+            <div class="q-addr-cols">
+              <div>
+                <div class="q-addr-title" id="q_hd_title">Head Office</div>
+                <div id="q_hd_a1">555 Rasa Tower2, Unit 1801 18th, 19th Floor</div>
+                <div id="q_hd_a2">Paholyothin Rd. Chatuchak Bangkok 10900</div>
+                <div id="q_hd_tel">Tel. 02-792-4500&nbsp;&nbsp;Fax. 02-792-4501</div>
+              </div>
+              <div>
+                <div class="q-addr-title" id="q_eb_title">Eastern Branch</div>
+                <div id="q_eb_a1">Amata Nakorn Industrial Estate 700/17 Moo 1,</div>
+                <div id="q_eb_a2">Tambol Klongtamru, Amphur Muang, Chonburi 20000</div>
+                <div id="q_eb_tel">Tel. 0-3845-7580&nbsp;&nbsp;Fax. 0-3845-7582</div>
+              </div>
+            </div>
+          </div>
+          <div class="q-hdr-right">
+            <div class="q-doctype" id="q_doctype">QUOTATION</div>
+            <div class="q-docsub" id="q_docsub">Leasing</div>
+          </div>
+        </div>
+
+        <!-- ── BODY (flex-grow, pushes signature down) ── -->
+        <div class="q-body">
+
+          <div class="q-inforow">
+            <div class="q-infocell"><span class="qi-label" id="lbl_qi_to">To :</span>&nbsp;<span class="qi-val" id="q_to">—</span></div>
+            <div class="q-infocell"><span class="qi-label" id="lbl_qi_from">From :</span>&nbsp;<span class="qi-val" id="q_from">—</span></div>
+            <div class="q-docinfo">
+              <div class="di-row"><span class="di-k" id="lbl_qi_qno">Quotation No :</span><span class="di-v" id="q_no"></span></div>
+              <div class="di-row"><span class="di-k" id="lbl_qi_issue">Issue Date :</span><span class="di-v" id="q_issue"></span></div>
+              <div class="di-row"><span class="di-k" id="lbl_qi_exp">Expiration Date :</span><span class="di-v" id="q_expire"></span></div>
+            </div>
+          </div>
+
+          <!-- spacer between inforow & intro -->
+          <div class="q-sp"></div>
+
+          <p class="q-intro" id="q_intro">Thank you for your trust in our service. We are pleased to offer the following prices for our service.</p>
+          <div class="q-baht-label">(Baht)</div>
+
+          <table class="q-tbl">
+            <thead>
+              <tr>
+                <th style="width:22px" id="col_no">No.</th>
+                <th id="col_asset">Asset</th>
+                <th class="num" style="width:90px" id="col_list">List Price<br/>(Incl. VAT)</th>
+                <th class="num" style="width:90px" id="col_dep">Deposit<br/>(Incl. VAT)</th>
+                <th class="ctr" style="width:52px" id="col_term">Term<br/>(Month)</th>
+                <th class="num" style="width:82px" id="col_pmt_ex">Monthly Payment<br/>(Excl. VAT)</th>
+                <th class="num" style="width:60px" id="col_vat">VAT</th>
+                <th class="num" style="width:82px" id="col_pmt_inc">Monthly Payment<br/>(Incl. VAT)</th>
+                <th class="num" style="width:90px" id="col_purchase">Purchase Price<br/>(Incl. VAT)</th>
+                <th class="ctr" style="width:30px" id="col_qty">Qty</th>
+                <th style="width:44px" id="col_color">Color</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="ctr">1</td>
+                <td id="q_asset"></td>
+                <td class="num" id="q_list">—</td>
+                <td class="num" id="q_deposit">—</td>
+                <td class="ctr" id="q_term">—</td>
+                <td class="num" id="q_pmt_ex">—</td>
+                <td class="num" id="q_vat">—</td>
+                <td class="num" id="q_pmt_inc">—</td>
+                <td class="num" id="q_purchase">—</td>
+                <td class="ctr" id="q_qty">—</td>
+                <td id="q_color"></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- spacer between table & ratebox -->
+          <div class="q-sp"></div>
+
+          <div class="q-ratebox">
+            <table>
+              <tr>
+                <td class="rb-key" id="rb_k1">Interest Rate Type</td><td class="rb-sep">:</td><td class="rb-val" id="rb_v1">Flat Rate</td>
+                <td class="rb-gap"></td>
+                <td class="rb-key" id="rb_k4">End of Contract</td><td class="rb-sep">:</td><td class="rb-val" id="rb_v4">Ownership is transferred to lessee</td>
+              </tr>
+              <tr>
+                <td class="rb-key" id="rb_k2">Frequency</td><td class="rb-sep">:</td><td class="rb-val" id="rb_v2">Monthly</td>
+                <td class="rb-gap"></td>
+                <td class="rb-key" id="rb_k5">Guarantor</td><td class="rb-sep">:</td><td class="rb-val" id="rb_v5" style="white-space:pre-line">-</td>
+              </tr>
+              <tr>
+                <td class="rb-key" id="rb_k3">Payment Method</td><td class="rb-sep">:</td><td class="rb-val" id="rb_v3">Bank Transfer</td>
+                <td colspan="4"></td>
+              </tr>
+            </table>
+          </div><!-- /ratebox -->
+
+          <!-- spacer between ratebox & subject -->
+          <div class="q-sp"></div>
+
+          <p class="q-subject" id="q_subject">* Subject to credit approval</p>
+
+          <!-- spacer between subject & terms -->
+          <div class="q-sp"></div>
+
+          <div class="q-terms">
+            <div class="q-terms-hdr" id="h_terms">Terms:</div>
+            <ol id="ol_terms_en">
+              <li>This quotation subjects to credit approval at our sole discretion.</li>
+              <li>If you cancel your order after signing this document for any reason, you shall be responsible for the total vehicle purchase price.</li>
+            </ol>
+            <div class="q-terms-hdr" id="h_details" style="margin-top:5px">Details of Condition:</div>
+            <ol>
+              <li>
+                <strong id="cond1_title">Vehicle Purchase Price</strong>
+                <div id="condition1" style="font-size:10px;margin-top:2px">—</div>
+                <div id="q_clause2" style="font-size:10px;margin-top:4px;line-height:1.7;">
+                  &#8226; The monthly lease rent doesn't include the 1st insurance, Compulsory Insurance, Tax Fee and registration Fee.<br/>
+                  &#8226; Lessee shall to be responsible for the 1st insurance, Compulsory Insurance and Tax Fee all contracts and the beneficially has to be Thai ORIX Leasing Co., Ltd.
+                </div>
+              </li>
+              <li id="condition2" style="margin-top:4px">This offer is valid for 30 days from the quotation date. If this document is not signed and returned to us within the 30 days, we reserve the right to change the offer in this quotation.</li>
+              <li id="q_clause3" style="margin-top:4px">This offer includes a purchase option. If you choose not to purchase the asset at the end of the lease period:
+                <div style="margin-top:3px;padding-left:4px;line-height:1.7;">
+                  a. The vehicle will be sold by us via auction to a 3rd party<br/>
+                  b. If the sale price at auction is less than the purchase option price, you agree to pay us the difference between the sale price and purchase option price
+                </div>
+              </li>
+            </ol>
+          </div>
+
+          <!-- Large spacer — pushes signature toward bottom, leaves small margin -->
+          <div class="q-sp-lg"></div>
+
+          <!-- ── SIGNATURE ── -->
+          <div class="q-sign">
+            <div class="q-sign-col">
+              <div class="q-sign-intro" id="lbl_authsig" style="text-align:center;">Your Sincerely,</div>
+              <div class="q-sign-spacer"></div>
+              <div class="q-sign-line"></div>
+              <div class="q-sign-name-block">
+               
+              <div class="q-sign-name" id="q_sign_name">PANUTDA KENGKRIENGKRAI</div>
+              <div class="q-sign-role" id="q_sign_role">Assistant Vice President</div>
+
+              </div>
+            </div>
+
+            <div class="q-sign-col">
+              <div class="q-sign-intro" id="q_sign_confirm" style="text-align:center;">By signing this document, you have confirmed your order,
+and have read and accepted all terms and conditions in this document.</div>
+              <div class="q-sign-spacer"></div>
+              <div class="q-sign-line"></div>
+              <div class="q-sign-row"><span class="sk" id="lbl_customer">Customer</span><span class="sv" id="q_cust_sign"></span></div>
+              <div class="q-sign-row"><span class="sk" id="lbl_date">Date</span></div>
+            </div>
+          </div>
+          <!-- /SIGNATURE -->
+
+        </div><!-- /q-body -->
+      </div><!-- /q-page -->
+    </div><!-- /quote-wrap -->
+  </div><!-- /quote-section-outer -->
+
+  <div class="btn-row no-print" style="margin-top:16px">
+    <button class="btn-primary" onclick="window.print()">🖨 พิมพ์ใบเสนอราคา / Print</button>
+    <button class="btn-ghost" onclick="exportExcel()">📊 Export Excel</button>
+    <button class="btn-danger" onclick="resetAll()">↺ รีเซ็ตทั้งหมด</button>
+  </div>
+</div>
+
+<script>
+const PURCHASE_OPTION_INC = 1070;
+const DEFAULT_VALUES = {
+  gross:0,discount:0,optionPlus:0,vatPct:7,
+  termUnit:'years',termVal:5,
+  downType:'amount',downInput:0,
+  balloonEnable:'false',balloonType:'amount',balloonInput:0,
+  mode:'Flat',flatRate:0,irrTargetPct:5.75,
+  commBaseChoice:'finance',commPct:2.5,commExtra:0,
+  paymentMethod:'transfer',
+  custName:'Test',fromName:'Jakkrawut  Naksomphan',
+  quotationNo:'',issueDate:'',validDays:30,
+  assetName:'',assetColor:'',assetQty:1,
+  targetMonthlyInc:'',quoteLang:'EN'
+};
+
+const $ = id => document.getElementById(id);
+function getVal(id){const el=$(id);if(!el)return null;const isNum=el.getAttribute?.('data-num')==='1'||el.type==='number';if(isNum){const v=parseFloat((el.value||'').replace(/,/g,'').trim());return isNaN(v)?0:v;}return el.value;}
+function setVal(id,v){const el=$(id);if(el)el.value=v;}
+function setText(id,v){const el=$(id);if(el)el.textContent=v;}
+function setHTML(id,v){const el=$(id);if(el)el.innerHTML=v;}
+function todayIso(){const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);}
+let _tt=null;
+function showToast(msg,type='success'){const el=$('toast');el.textContent=msg;el.className='show '+type;clearTimeout(_tt);_tt=setTimeout(()=>{el.className='';},3800);}
+const fmt0=v=>isFinite(v)?Math.round(v).toLocaleString('th-TH'):'—';
+const fmt2=v=>isFinite(v)?Number(v).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+const fmt4=v=>isFinite(v)?Number(v).toLocaleString('th-TH',{minimumFractionDigits:4,maximumFractionDigits:4}):'—';
+const fmtNum=(v,d=2)=>isFinite(v)?Number(v).toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}):'—';
+
+function readInputs(){
+  const gross=getVal('gross'),discount=getVal('discount'),optionPlus=getVal('optionPlus');
+  const vatPct=getVal('vatPct')/100;
+  const termUnit=$('termUnit')?$('termUnit').value:'years';
+  const termVal=Math.max(0,getVal('termVal'));
+  const years=termUnit==='months'?termVal/12:termVal;
+  const months=termUnit==='months'?Math.trunc(termVal):Math.trunc(termVal*12);
+  const flatRate=getVal('flatRate')/100;
+  const net=gross-discount+optionPlus;
+  const downType=getVal('downType'),downInput=getVal('downInput');
+  const downBaht=downType==='percent'?net*(downInput/100):downInput;
+  const balloonEnable=getVal('balloonEnable')==='true';
+  const balloonType=getVal('balloonType'),balloonInput=getVal('balloonInput');
+  const balloonBaht=balloonEnable?(balloonType==='percent'?net*(balloonInput/100):balloonInput):0;
+  const finance=Math.max(0,net-downBaht);
+  const finMinusBalloon=Math.max(0,finance-balloonBaht);
+  const commBaseChoice=getVal('commBaseChoice'),commPct=getVal('commPct')/100,commExtra=getVal('commExtra');
+  return{gross,discount,optionPlus,vatPct,years,months,flatRate,net,downType,downInput,downBaht,
+         balloonEnable,balloonType,balloonInput,balloonBaht,finance,finMinusBalloon,commBaseChoice,commPct,commExtra,termUnit,termVal};
+}
+
+function rate(nper,pmt,pv,fv,type,guess){
+  fv=fv||0;type=type||0;guess=guess||0.01;
+  const MAX=100,tol=1e-12;let r=guess;
+  if(Math.abs(pmt)<1e-18&&Math.abs(fv)<1e-18)return 0;
+  for(let i=0;i<MAX;i++){
+    const t=Math.pow(1+r,nper);
+    const f=pv*t+pmt*(1+r*type)*(t-1)/r+fv;
+    const df=pv*nper*Math.pow(1+r,nper-1)+pmt*(1+r*type)*((t-1)/r+nper*Math.pow(1+r,nper-1)/r-(t-1)/(r*r));
+    const nr=r-f/df;if(!isFinite(nr))break;
+    if(Math.abs(nr-r)<tol){r=nr;break;}r=nr;
+  }
+  return r;
+}
+
+function uiToggleMode(){const isIRR=getVal('mode')==='IRR';$('irrRow').style.display=isIRR?'':'none';$('btnSolveIRR').disabled=!isIRR;}
+function toggleBalloonUI(){
+  var on=getVal('balloonEnable')==='true';
+  $('balloonFields').style.display=on?'':'none';
+  var btf=$('balloonTypeField');if(btf)btf.style.display=on?'':'none';
+}
+
+function onGuarNone(cb){
+  if(cb.checked){$('guar_personal').checked=false;$('guar_corporate').checked=false;}
+  else{if(!$('guar_personal').checked&&!$('guar_corporate').checked)cb.checked=true;}
+  recalc();
+}
+function onGuarCheck(cb){
+  if(cb.checked)$('guar_none').checked=false;
+  if(!$('guar_personal').checked&&!$('guar_corporate').checked)$('guar_none').checked=true;
+  recalc();
+}
+function getGuarantorLabel(TH){
+  var p=$('guar_personal')&&$('guar_personal').checked;
+  var c=$('guar_corporate')&&$('guar_corporate').checked;
+  if(!p&&!c)return'-';
+  var parts=[];
+  if(p)parts.push(TH?'บุคคลธรรมดา (กรรมการบริษัท)':'Personal (Director)');
+  if(c)parts.push(TH?'ค้ำประกันโดยนิติบุคคล':'Corporate Guarantee');
+  return parts.join('\n');
+}
+function getPaymentLabel(val,TH){
+  if(val==='cheque_all')return TH?'เช็คลงวันที่ล่วงหน้าตลอดอายุสัญญา':'Post Date Cheque - All Contract';
+  if(val==='cheque_12') return TH?'เช็คลงวันที่ล่วงหน้า (ต่ออายุทุก 12 เดือน)':'Post Date Cheque - 12 Months Roll Over';
+  return TH?'โอนเงินผ่านธนาคาร':'Bank Transfer';
+}
+
+var _prevTermUnit='years';
+function onTermUnitChange(oldUnit,newUnit){
+  const v=getVal('termVal');if(!v)return;
+  let nv;
+  if(oldUnit==='years'&&newUnit==='months')nv=Math.round(v*12);
+  else if(oldUnit==='months'&&newUnit==='years')nv=parseFloat((v/12).toFixed(2));
+  else nv=v;
+  setVal('termVal',String(nv));
+  if($('termVal')._formatted)$('termVal').value=formatWithComma(String(nv));
+}
+
+function applyQuoteLang(lang){
+  var TH=lang==='TH';
+  setText('q_co_name',TH?'บริษัท ไทยโอริกซ์ลีสซิ่ง จำกัด':'THAI ORIX LEASING CO., LTD.');
+  setText('q_doctype',TH?'ใบเสนอราคา':'QUOTATION');
+  setText('q_docsub',TH?'ลีสซิ่ง':'Leasing');
+  setText('q_hd_title',TH?'สำนักงานใหญ่':'Head Office');
+  setText('q_hd_a1',TH?'555 อาคาร รสา ทาวเวอร์ 2 ยูนิต 1801 ชั้น 18 และ 19':'555 Rasa Tower2, Unit 1801 18th, 19th Floor');
+  setText('q_hd_a2',TH?'ถนนพหลโยธิน จตุจักร กรุงเทพฯ 10900':'Paholyothin Rd. Chatuchak Bangkok 10900');
+  setText('q_hd_tel',TH?'โทร 02-792-4500   แฟกซ์ 02-792-4501':'Tel. 02-792-4500  Fax. 02-792-4501');
+  setText('q_eb_title',TH?'สาขาตะวันออก':'Eastern Branch');
+  setText('q_eb_a1',TH?'นิคมอมตะนคร 700/17 หมู่ 1':'Amata Nakorn Industrial Estate 700/17 Moo 1,');
+  setText('q_eb_a2',TH?'ต.คลองตำหรุ อ.เมือง จ.ชลบุรี 20000':'Tambol Klongtamru, Amphur Muang, Chonburi 20000');
+  setText('q_eb_tel',TH?'โทร 0-3845-7580   แฟกซ์ 0-3845-7582':'Tel. 0-3845-7580  Fax. 0-3845-7582');
+  setText('lbl_qi_to',TH?'เรียน :':'To :');
+  setText('lbl_qi_from',TH?'จาก :':'From :');
+  setText('lbl_qi_qno',TH?'ใบเสนอราคาเลขที่ :':'Quotation No :');
+  setText('lbl_qi_issue',TH?'วันที่เสนอราคา :':'Issue Date :');
+  setText('lbl_qi_exp',TH?'มีผลถึง :':'Expiration Date :');
+  setText('q_intro',TH?'บริษัทไทยโอริกซ์ลีสซิ่ง จำกัด ขอขอบคุณที่ท่านมีความสนใจในการใช้บริการ ทางบริษัท ขอเสนอราคาดังต่อไปนี้':'Thank you for your trust in our service. We are pleased to offer the following prices for our service.');
+  setText('col_no',TH?'ลำดับ':'No.');
+  setText('col_asset',TH?'รายการทรัพย์สิน':'Asset');
+  setHTML('col_list',TH?'ราคา<br/>(รวม VAT)':'List Price<br/>(Incl. VAT)');
+  setHTML('col_dep',TH?'เงินมัดจำ<br/>(รวม VAT)':'Deposit<br/>(Incl. VAT)');
+  setHTML('col_term',TH?'ระยะเวลา<br/>(เดือน)':'Term<br/>(Month)');
+  setHTML('col_pmt_ex',TH?'ค่าเช่ารายเดือน<br/>(ไม่รวม VAT)':'Monthly Payment<br/>(Excl. VAT)');
+  setText('col_vat','VAT');
+  setHTML('col_pmt_inc',TH?'ค่าเช่ารายเดือน<br/>(รวม VAT)':'Monthly Payment<br/>(Incl. VAT)');
+  setHTML('col_purchase',TH?'ราคาซื้อสิทธิ์<br/>(รวม VAT)':'Purchase Price<br/>(Incl. VAT)');
+  setText('col_qty',TH?'จำนวน':'Qty');
+  setText('col_color',TH?'สี':'Color');
+  setText('rb_k1',TH?'ประเภทดอกเบี้ย':'Interest Rate Type');
+  setText('rb_k2',TH?'ความถี่ชำระ':'Frequency');
+  setText('rb_k3',TH?'วิธีชำระเงิน':'Payment Method');
+  setText('rb_v2',TH?'รายเดือน':'Monthly');
+  setText('rb_k4',TH?'เงื่อนไขสิ้นสุดสัญญา':'End of Contract');
+  setText('rb_v4',TH?'กรรมสิทธิ์โอนให้ผู้เช่า':'Ownership is transferred to lessee');
+  setText('rb_k5',TH?'ผู้ค้ำประกัน':'Guarantor');
+  setText('q_subject',TH?'* ใบเสนอราคานี้ขึ้นอยู่กับผลการพิจารณาอนุมัติสินเชื่อของบริษัทฯ':'* Subject to credit approval');
+  setText('h_terms',TH?'เงื่อนไข :':'Terms:');
+  setText('h_details',TH?'รายละเอียดเงื่อนไข :':'Details of Condition:');
+  setText('cond1_title',TH?'ราคาซื้อรถยนต์':'Vehicle Purchase Price');
+  setHTML('ol_terms_en',TH?'<li>ใบเสนอราคาฉบับนี้ขึ้นอยู่กับผลการพิจารณาอนุมัติสินเชื่อของบริษัทฯ แต่เพียงผู้เดียว</li><li>หากท่านยกเลิกคำสั่งซื้อหลังจากลงนามในเอกสารนี้แล้วไม่ว่าด้วยเหตุใดก็ตาม ท่านจะต้องรับผิดชอบต่อราคาซื้อรถยนต์ทั้งหมด</li>':'<li>This quotation subjects to credit approval at our sole discretion.</li><li>If you cancel your order after signing this document for any reason, you shall be responsible for the total vehicle purchase price.</li>');
+  setHTML('q_clause2',TH?'&#8226; ค่าเช่ารายเดือนข้างต้นยังไม่รวมค่าประกันภัยชั้น 1, พ.ร.บ., ภาษีรถยนต์ประจำปี และค่าธรรมเนียมการจดทะเบียน<br/>&#8226; ผู้เช่าต้องจัดทำและรับผิดชอบค่าประกันภัยชั้น 1, พ.ร.บ. และภาษีรถยนต์ตลอดสัญญา โดยระบุบริษัท ไทยโอริกซ์ลีสซิ่ง จำกัด เป็นผู้รับประโยชน์':'&#8226; The monthly lease rent doesn\'t include the 1st insurance, Compulsory Insurance, Tax Fee and registration Fee.<br/>&#8226; Lessee shall to be responsible for the 1st insurance, Compulsory Insurance and Tax Fee all contracts and the beneficially has to be Thai ORIX Leasing Co., Ltd.');
+  setText('condition2',TH?'ข้อเสนอนี้มีอายุ 30 วัน นับจากวันที่ใบเสนอราคา หากไม่ได้รับเอกสารที่ลงนามภายใน 30 วัน บริษัทฯ ขอสงวนสิทธิ์เปลี่ยนแปลงข้อเสนอในใบเสนอราคานี้':'This offer is valid for 30 days from the quotation date. If this document is not signed and returned to us within the 30 days, we reserve the right to change the offer in this quotation.');
+  setText('lbl_authsig',TH?'ขอแสดงความนับถืออย่างสูง':'Your Sincerely,');
+  setText('q_sign_name', TH ? 'ปนัดดา เก่งเกรียงไกร' : 'PANUTDA KENGKRIENGKRAI');
+  setText('q_sign_role',TH?'ผู้ช่วยรองผู้อำนวยการฝ่ายบริหารงานสินเชื่อรถยนต์':'Assistant Vice President');
+  setText('q_sign_confirm',TH?'การลงนามในเอกสารฉบับนี้ถือว่าผู้เช่าได้ยืนยันการสั่งซื้อ\nและยอมรับเงื่อนไขทั้งหมดที่ระบุไว้แล้ว':'By signing this document, you have confirmed your order,\nand have read and accepted all terms and conditions in this document.');
+  setText('lbl_customer',TH?'ลูกค้า':'Customer');
+  setText('lbl_date',TH?'วันที่':'Date');
+}
+
+function recalc(){
+  var inp=readInputs();
+  var vatPct=inp.vatPct,years=inp.years,months=inp.months,flatRate=inp.flatRate,net=inp.net;
+  var downBaht=inp.downBaht,balloonBaht=inp.balloonBaht,finance=inp.finance;
+  var finMinusBalloon=inp.finMinusBalloon,commBaseChoice=inp.commBaseChoice;
+  var commPct=inp.commPct,commExtra=inp.commExtra;
+  var hasDown=downBaht>1e-10,hasBalloon=balloonBaht>1e-10;
+  var purchaseOptionInc=hasBalloon?(downBaht+balloonBaht):hasDown?downBaht:PURCHASE_OPTION_INC;
+  var totalInterest=finMinusBalloon*flatRate*years;
+  var pmtInc=months>0?(finMinusBalloon+totalInterest)/months:0;
+  var pmtRounded=Math.ceil(pmtInc);
+  var pmtIncDisplay=pmtRounded;
+  var pmtExDisplay=pmtIncDisplay/(1+vatPct);
+  var pmtVatDisplay=pmtIncDisplay-pmtExDisplay;
+  var commBaseNum=commBaseChoice==='interest'?totalInterest:finance;
+  var commission=Math.round(commBaseNum*commPct+Number(commExtra||0));
+  var pmtEx=pmtInc/(1+vatPct);
+  var pvCompany=-(finance+commission)/(1+vatPct);
+  var pvCustomer=-finance/(1+vatPct);
+  var fvEx=balloonBaht/(1+vatPct);
+  var rComp=months>0&&pmtEx>0?rate(months,pmtEx,pvCompany,fvEx,0,0.01):0;
+  var rCust=months>0&&pmtEx>0?rate(months,pmtEx,pvCustomer,fvEx,0,0.01):0;
+
+  setText('pmtRounded',fmt0(pmtRounded));
+  setText('months_hero',months+' งวด');
+  setText('netPrice',fmt2(net));setText('downBaht',fmt2(downBaht));
+  setText('balloonBaht',fmt2(balloonBaht));setText('finance',fmt2(finance));
+  setText('months',months+' เดือน');setText('finMinusBalloon',fmt2(finMinusBalloon));
+  setText('totalInterest',fmt2(totalInterest));
+  setText('pmtInc',fmt0(pmtRounded));
+  setText('commission',fmt2(commission));
+  setText('irr',isFinite(rComp)?(rComp*12*100).toFixed(4)+' %':'—');
+  setText('trCustomer',isFinite(rCust)?(rCust*12*100).toFixed(4)+' %':'—');
+
+  var netEx=net/(1+vatPct),downEx=downBaht/(1+vatPct),finEx=finance/(1+vatPct);
+  var commEx=commission/(1+vatPct),rvEx=(downBaht+balloonBaht)/(1+vatPct);
+  setText('ws_net_ex',fmt4(netEx));setText('ws_net_inc',fmt2(net));
+  setText('ws_dep_ex',fmt4(downEx));setText('ws_dep_inc',fmt2(downBaht));
+  setText('ws_fin_ex',fmt4(finEx));setText('ws_fin_inc',fmt2(finance));
+  setText('ws_pmt_ex',fmt4(pmtExDisplay));setText('ws_pmt_inc',fmt0(pmtRounded));
+  setText('ws_comm_ex',fmt4(commEx));setText('ws_comm_inc',fmt2(commission));
+  setText('ws_rv_ex',fmt4(rvEx));setText('ws_rv_inc',fmt2(downBaht+balloonBaht));
+
+  var custName=getVal('custName'),fromName=getVal('fromName');
+  var quotationNo=getVal('quotationNo'),issueDate=getVal('issueDate');
+  var validDays=Math.max(0,getVal('validDays'));
+  var assetName=getVal('assetName'),assetColor=getVal('assetColor');
+  var assetQty=Math.max(1,getVal('assetQty'));
+  // date is optional — show blank if not filled in
+  var issueDisp=issueDate?issueDate.split('-').reverse().join('/'):'';
+  var lang=$('quoteLang')?$('quoteLang').value:'EN';
+  var TH=lang==='TH';
+
+  setText('q_to',custName);setText('q_from',fromName);
+  setText('q_no',quotationNo||'');setText('q_issue',issueDisp);
+  setText('q_expire',issueDisp?(validDays+(TH?' วัน หลังจากวันที่เสนอราคา':' days after the issue date')):'');
+  var ae=$('q_asset');if(ae)ae.textContent=assetName||'';
+  var ce=$('q_color');if(ce)ce.textContent=assetColor||'';
+  setText('q_list',fmt2(inp.gross));setText('q_deposit',fmt2(downBaht));
+  setText('q_term',months.toString());
+  setText('q_pmt_ex',fmt2(pmtExDisplay));setText('q_vat',fmt2(pmtVatDisplay));
+  setText('q_pmt_inc',fmt0(pmtRounded));setText('q_purchase',fmt2(purchaseOptionInc));
+  setText('q_qty',assetQty.toString());setText('q_cust_sign',custName);
+
+  setText('rb_v1','Flat Rate');
+  setText('rb_v5',getGuarantorLabel(TH));
+  setText('rb_v3',getPaymentLabel($('paymentMethod')?$('paymentMethod').value:'transfer',TH));
+
+  var c1=$('condition1');
+  var diffEndInc=hasBalloon?Math.max(0,purchaseOptionInc-downBaht):0;
+  if(c1){
+    if(TH){
+      if(hasBalloon)c1.innerHTML='ผู้เช่าตกลงชำระเงินดาวน์ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT)<br/>เงินดาวน์เป็นส่วนหนึ่งของราคาสิทธิซื้อ <strong>'+fmtNum(purchaseOptionInc,2)+' บาท</strong> เมื่อสัญญาสิ้นสุด ลูกค้าชำระส่วนต่าง <strong>'+fmtNum(diffEndInc,2)+' บาท</strong>';
+      else if(hasDown)c1.innerHTML='ผู้เช่าตกลงชำระเงินดาวน์ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT) เงินดาวน์จะหักเป็นราคาสิทธิซื้อโดยอัตโนมัติเมื่อสัญญาสิ้นสุด';
+      else c1.innerHTML='เมื่อสัญญาเช่าครบกำหนด ผู้เช่าต้องชำระราคาสิทธิซื้อ <strong>'+fmtNum(PURCHASE_OPTION_INC,2)+' บาท</strong> (รวม VAT)';
+    }else{
+      if(hasBalloon)c1.innerHTML='Lessee shall pay <strong>'+fmtNum(downBaht,2)+' Baht</strong> (Inc. VAT) as a deposit.<br/>Deposit is part of the purchase price of <strong>'+fmtNum(purchaseOptionInc,2)+' Baht</strong>. At contract end, customer shall pay the difference: <strong>'+fmtNum(diffEndInc,2)+' Baht</strong> (Inc. VAT).';
+      else if(hasDown)c1.innerHTML='Lessee shall pay <strong>'+fmtNum(downBaht,2)+' Baht</strong> (Inc. VAT) as a deposit to Lessor. The deposit will be applied automatically to Purchase Price when the contract expired.';
+      else c1.innerHTML='Upon contract expiry, the Lessee shall pay a Purchase Option of <strong>'+fmtNum(PURCHASE_OPTION_INC,2)+' Baht</strong> (Inc. VAT) to the Lessor.';
+    }
+  }
+  var q3=$('q_clause3');
+  if(q3){
+    if(TH)q3.innerHTML='ข้อเสนอนี้รวมสิทธิซื้อมูลค่า <strong>'+fmt2(purchaseOptionInc)+' บาท</strong> (รวม VAT) หากท่านไม่ประสงค์ซื้อเมื่อสิ้นสุดสัญญา:<div style="margin-top:3px;padding-left:4px;line-height:1.7;">ก. บริษัทฯ จะนำทรัพย์สินออกจำหน่ายผ่านการประมูล<br/>ข. หากราคาประมูลต่ำกว่าราคาสิทธิซื้อ ท่านตกลงชำระส่วนต่าง</div>';
+    else q3.innerHTML='This offer includes a purchase option of <strong>'+fmt2(purchaseOptionInc)+' Baht</strong> (Inc. VAT). If you choose not to purchase at the end of the lease period:<div style="margin-top:3px;padding-left:4px;line-height:1.7;">a. The vehicle will be sold via auction to a 3rd party<br/>b. If the sale price is less than the purchase option price, you agree to pay the difference</div>';
+  }
+
+  var warnBox=$('policyWarnings');warnBox.innerHTML='';
+  var downPct=net>0?downBaht/net:0,balloonPct=net>0?balloonBaht/net:0;
+  if(balloonPct>0.30){var s=document.createElement('span');s.className='pill warn';s.textContent='⚠ Balloon > 30% Net';warnBox.appendChild(s);}
+  if(downPct+balloonPct>1){var s2=document.createElement('span');s2.className='pill err';s2.textContent='⛔ Down + Balloon > 100% Net';warnBox.appendChild(s2);}
+}
+
+function solveFlatFromIRR(){
+  if(getVal('mode')!=='IRR')return;
+  var inp=readInputs();
+  var vatPct=inp.vatPct,years=inp.years,months=inp.months,finance=inp.finance;
+  var finMinusBalloon=inp.finMinusBalloon,balloonBaht=inp.balloonBaht;
+  var commBaseChoice=inp.commBaseChoice,commPct=inp.commPct,commExtra=inp.commExtra;
+  var irrTarget=getVal('irrTargetPct')/100;
+  if(months<=0){showToast('กรุณากำหนดระยะเวลา','error');return;}
+  function irrFromFlat(flat){
+    var ti=finMinusBalloon*flat*years,pmt=(finMinusBalloon+ti)/months,pmtEx=pmt/(1+vatPct);
+    var comm=Math.round(((commBaseChoice==='interest'?ti:finance)*commPct)+Number(commExtra||0));
+    var pv=-(finance+comm)/(1+vatPct),fv=balloonBaht/(1+vatPct);
+    return pmtEx>0?rate(months,pmtEx,pv,fv,0,0.01)*12:0;
+  }
+  var lo=1e-6,hi=0.40,mid=0.05;
+  for(var i=0;i<80;i++){mid=(lo+hi)/2;var irr=irrFromFlat(mid);if(!isFinite(irr))break;if(irr>irrTarget)hi=mid;else lo=mid;}
+  var a=lo,b=hi,irrA=irrFromFlat(a);
+  for(var j=0;j<120;j++){var m=(a+b)/2,irrM=irrFromFlat(m);if(!isFinite(irrM))break;if((irrA-irrTarget)*(irrM-irrTarget)<=0)b=m;else a=m;if(Math.abs(b-a)<1e-7)break;}
+  mid=(a+b)/2;setVal('flatRate',(mid*100).toFixed(4));recalc();
+  showToast('✅ Flat = '+(mid*100).toFixed(4)+'%  (IRR ≈ '+(irrTarget*100).toFixed(4)+'%)','success');
+}
+
+function goalSeekDown(){
+  var target = getVal('targetMonthlyInc');
+  if(!(target > 0)){
+    showToast('กรุณากรอกค่างวดเป้าหมาย','error');
+    return;
+  }
+
+  var base = readInputs();
+  if(base.months <= 0){
+    showToast('กรุณากำหนดระยะเวลา','error');
+    return;
+  }
+
+  // ค่างวดต้อง "คำนวณ+ปัด" ให้ตรงกับ recalc() เป๊ะๆ
+  function pmtFromDown(down){
+    setVal('downType','amount');
+    setVal('downInput', String(Math.round(down)));
+
+    var i = readInputs();
+    if(i.finMinusBalloon <= 0 || i.months <= 0) return 0;
+
+    var pmtInc = (i.finMinusBalloon * (1 + i.flatRate * i.years)) / i.months;
+
+    // ตรงกับ recalc(): ceil(round(...,2))
+    return Math.ceil(Math.round(pmtInc * 100) / 100);
+  }
+
+  // ช่วงค้นหา: 0..net (balloon ปิด => ไม่ต้องปรับช่วงอื่น)
+  var lo = 0;
+  var hi = base.net;        // net = gross - discount + optionPlus
+  var best = 0;
+
+  for(let k = 0; k < 40; k++){
+    let mid = Math.floor((lo + hi) / 2);
+    let p = pmtFromDown(mid);
+
+    if(p === target){ best = mid; break; }
+
+    // ถ้าค่างวดมากไป → ต้อง "เพิ่มดาวน์"
+    if(p > target){
+      lo = mid + 1;
+      best = mid;
+    } else {
+      hi = mid - 1;
+      best = mid;
+    }
+  }
+
+  setVal('downType','amount');
+  setVal('downInput', String(best));
+  recalc();
+
+  var finalP = pmtFromDown(best);
+  showToast(
+    finalP === target
+      ? `✅ เงินดาวน์ ${best.toLocaleString('th-TH')} บาท → ค่างวด ${finalP.toLocaleString('th-TH')} บาท`
+      : `⚠ ใกล้เคียง: ดาวน์ ${best.toLocaleString('th-TH')} → ${finalP.toLocaleString('th-TH')}`
+    ,
+    finalP === target ? 'success' : 'error'
+  );
+}
+function resetAll(){
+  Object.entries(DEFAULT_VALUES).forEach(([k,v])=>setVal(k,v));
+  $('guar_none').checked=true;$('guar_personal').checked=false;$('guar_corporate').checked=false;
+  applyQuoteLang('EN');uiToggleMode();toggleBalloonUI();recalc();
+}
+
+function exportExcel(){
+  var ws=$('ws_table').outerHTML,quote=$('quoteSection').outerHTML;
+  var html='<html><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial;font-size:11pt}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px}th{background:#eef2f7}</style></head><body><h2>OWS Working Sheet</h2>'+ws+'<h2>Quotation</h2>'+quote+'</body></html>';
+  var dt=new Date(),y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'application/vnd.ms-excel'}));a.download='OWS_Quotation_'+y+m+d+'.xls';a.click();URL.revokeObjectURL(a.href);
+}
+
+function formatWithComma(str){
+  if(!str)return'';
+  var s=String(str).replace(/,/g,'').trim().replace(/^0+(?=[1-9])/,'');
+  if(s==='.'||s==='-')return s;if(isNaN(s))return str;
+  var neg=s.startsWith('-')?'-':'',body=s.replace(/^-/,'');
+  var parts=body.split('.'),int=parts[0],frac=parts[1];
+  return neg+(int?Number(int).toLocaleString('th-TH'):'0')+(frac!=null?'.'+frac:'');
+}
+function unformat(str){return String(str||'').replace(/,/g,'');}
+
+function setupNumericFormatting(){
+  document.querySelectorAll('input[type="number"]').forEach(el=>{
+    el.setAttribute('data-num','1');el._formatted=true;
+    var sv=el.value;el.type='text';
+    el.setAttribute('inputmode',el.getAttribute('inputmode')||'decimal');
+    el.value=sv;
+    if(!el.readOnly&&!el.disabled){
+      el.classList.add('editable');
+      el.addEventListener('focus',()=>el.classList.add('editing'));
+      el.addEventListener('blur',()=>el.classList.remove('editing'));
+    }
+    el.addEventListener('focus',()=>{el.value=unformat(el.value);setTimeout(()=>{try{el.setSelectionRange(el.value.length,el.value.length);}catch(e){}},0);});
+    el.addEventListener('input',()=>{el.value=el.value.replace(/[^0-9,.\-]/g,'');});
+    el.addEventListener('blur',()=>{el.value=formatWithComma(el.value);});
+    if(el.value)el.value=formatWithComma(el.value);
+  });
+  document.querySelectorAll('select').forEach(sel=>{
+    if(!sel.disabled&&!sel.classList.contains('term-unit-sel')){
+      sel.classList.add('editable');
+      sel.addEventListener('focus',()=>sel.classList.add('editing'));
+      sel.addEventListener('blur',()=>sel.classList.remove('editing'));
+    }
+  });
+}
+
+document.addEventListener('change',e=>{
+  if(e.target.id==='termUnit'){var nu=e.target.value;onTermUnitChange(_prevTermUnit,nu);_prevTermUnit=nu;recalc();}
+});
+document.addEventListener('input',e=>{
+  if(!['INPUT','SELECT'].includes(e.target.tagName))return;
+  if(e.target.id==='termUnit')return;
+  if(e.target.id==='mode')uiToggleMode();
+  if(e.target.id==='balloonEnable')toggleBalloonUI();
+  if(e.target.id==='quoteLang'){applyQuoteLang(e.target.value);recalc();return;}
+  recalc();
+});
+document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();goalSeekDown();}});
+window.addEventListener('DOMContentLoaded',()=>{
+  _prevTermUnit=$('termUnit')?$('termUnit').value:'years';
+  applyQuoteLang('EN');uiToggleMode();toggleBalloonUI();recalc();
+  setupNumericFormatting();
+  document.addEventListener('wheel',e=>{if(document.activeElement&&document.activeElement.getAttribute('data-num')==='1')document.activeElement.blur();},{passive:false});
+  if($('btnSolveIRR'))$('btnSolveIRR').addEventListener('click',solveFlatFromIRR);
+  if($('btnGoalSeek'))$('btnGoalSeek').addEventListener('click',goalSeekDown);
+});
+</script>
+</body>
+</html>
