@@ -391,6 +391,25 @@ and have read and accepted all terms and conditions in this document.</div>
           </div>
           <!-- /SIGNATURE -->
 
+          <!-- ── FOOTER with QR Code ── -->
+          <div class="q-footer">
+            <div class="q-footer-qr">
+              <div id="q-qrcode-placeholder" style="width:70px;height:70px;background:#f0f0f0;border:1px solid #999;display:flex;align-items:center;justify-content:center;font-size:8px;color:#888;flex-shrink:0;">
+                [QR Code]
+              </div>
+            </div>
+            <div class="q-footer-text" id="q_footer_text">
+              <div id="q_footer_content_en" style="font-size:7.5px;color:#333;line-height:1.45;">
+                I have been fully informed essential details and conditions of the agreement, the impacts, service fees (if any), possible expense, and possible interest obligations not yet due and payable under the agreement that may arise, including the information in the sales sheet via this QR code or this LINK: <a href="https://www.orix.co.th/th/sales-sheet" style="color:#0066cc;text-decoration:none;">https://www.orix.co.th/th/sales-sheet</a>
+              </div>
+              <div id="q_footer_content_th" style="display:none;font-size:7.5px;color:#333;line-height:1.45;">
+                ข้าพเจ้าได้ทราบถึงสาระสำคัญและเงื่อนไขของสัญญา ผลกระทบ ค่าบริการ (ถ้ามี) ค่าใช้จ่ายที่อาจเกิดขึ้น และภาระดอกเบี้ยที่ยังไม่ถึงกำหนดชำระตามสัญญาที่อาจเกิดขึ้น รวมถึงข้อมูลในเอกสารผลิตภัณฑ์ตามคิวอาร์โค้ดนี้หรือลิงก์นี้ <a href="https://www.orix.co.th/th/sales-sheet" style="color:#0066cc;text-decoration:none;">https://www.orix.co.th/th/sales-sheet</a> ครบถ้วนแล้ว
+              </div>
+            </div>
+            <div class="q-footer-pagenum" id="q_pagenum">Page 1/1</div>
+          </div>
+          <!-- /FOOTER -->
+
         </div><!-- /q-body -->
       </div><!-- /q-page -->
     </div><!-- /quote-wrap -->
@@ -560,6 +579,15 @@ function applyQuoteLang(lang){
   setText('q_sign_confirm',TH?'การลงนามในเอกสารฉบับนี้ถือว่าผู้เช่าได้ยืนยันการสั่งซื้อ\nและยอมรับเงื่อนไขทั้งหมดที่ระบุไว้แล้ว':'By signing this document, you have confirmed your order,\nand have read and accepted all terms and conditions in this document.');
   setText('lbl_customer',TH?'ลูกค้า':'Customer');
   setText('lbl_date',TH?'วันที่':'Date');
+  
+  // Toggle footer content based on language
+  if(TH){
+    $('q_footer_content_en').style.display='none';
+    $('q_footer_content_th').style.display='block';
+  }else{
+    $('q_footer_content_en').style.display='block';
+    $('q_footer_content_th').style.display='none';
+  }
 }
 
 function recalc(){
