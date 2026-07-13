@@ -195,7 +195,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 /* Flex spacers — distribute blank space evenly between content blocks */
 .q-sp{flex:1;min-height:0;}          /* small spacer (between most blocks) */
-.q-sp-lg{flex:2;min-height:0;}       /* larger spacer (above signature) */
+.q-sp-lg{flex:0.5;min-height:0;}       /* larger spacer (above signature) */
 
 /* ── Header ── */
 .q-hdr{
