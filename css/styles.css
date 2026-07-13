@@ -129,396 +129,717 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 #toast.success{background:#0d3d22;color:#7eeabc;border:1px solid rgba(110,220,166,.3);}
 #toast.error{background:#3a0810;color:#f7a0aa;border:1px solid rgba(220,60,80,.3);}
 
-/* =====================================================
-   A4 QUOTATION LAYOUT (WYSIWYG SCREEN + PRINT)
-   ===================================================== */
+/* ===== QUOTATION — A4 PAGE LAYOUT ===== */
 
+/* 
+  Outer wrapper:
+  ใช้เป็นพื้นหลังสีเทาเพื่อให้ preview เหมือนกระดาษวางบนโต๊ะ
+*/
 .quote-section-outer{
-    margin-top:28px;
-    background:#d4d7dd;
-    padding:24px;
+  margin-top:28px;
+  background:#c8cbd2;
+  border-radius:6px;
+  padding:28px 20px 32px;
 }
 
-/* Controls stay outside paper */
+/* Controls bar above the paper */
 .quote-controls{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    margin-bottom:16px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px 14px;
+  font-size:12px;
+  color:var(--muted2);
 }
 
-/* =====================================================
-   PHYSICAL A4 PAPER
-   ===================================================== */
+.quote-controls label{
+  font-weight:600;
+}
 
+.quote-controls select{
+  padding:4px 8px;
+  border:1px solid var(--border);
+  border-radius:var(--rad-sm);
+  font-size:12px;
+  font-family:var(--font);
+  background:#fff;
+  cursor:pointer;
+}
+
+.quote-controls .spacer{
+  flex:1;
+}
+
+
+/* 
+  A4 Paper Preview
+
+  สำคัญ:
+  - ใช้ max-width:794px เพื่อรักษาสัดส่วนเดิมที่คุณจูนไว้แล้ว
+  - ใช้ aspect-ratio:210/297 เพื่อให้ preview เป็น A4
+  - ไม่เปลี่ยนเป็น width:210mm บน screen เพราะจะทำให้สัดส่วนที่จูนด้วย px เพี้ยน
+*/
 .quote-wrap{
+  background:#fff;
+  border:1px solid #b0b4bc;
+  border-radius:2px;
+  overflow:hidden;
 
-    width:210mm;
-    min-width:210mm;
-    max-width:210mm;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.08),
+    0 4px 12px rgba(0,0,0,.12),
+    0 12px 32px rgba(0,0,0,.10),
+    0 24px 56px rgba(0,0,0,.07);
 
-    height:297mm;
-    min-height:297mm;
+  font-family:Calibri,Arial,sans-serif;
 
-    margin:auto;
+  width:100%;
+  max-width:794px;
 
-    background:#fff;
+  margin:0 auto;
 
-    border:1px solid #c8c8c8;
+  aspect-ratio:210 / 297;
 
-    box-shadow:
-        0 2px 8px rgba(0,0,0,.08),
-        0 12px 40px rgba(0,0,0,.12);
-
-    overflow:hidden;
-
-    position:relative;
+  position:relative;
 }
 
 
-/* =====================================================
-   PAGE CONTENT
-   ===================================================== */
+/* 
+  Inner page content
 
+  คงค่าจาก layout เดิมไว้ เพราะ spacing ทั้งหน้าอ้างอิงจากตรงนี้
+*/
 .q-page{
+  width:100%;
+  height:100%;
 
-    width:100%;
-    height:100%;
+  position:absolute;
+  top:0;
+  left:0;
 
-    padding:
-        12mm
-        12mm
-        10mm
-        12mm;
+  padding:2.8% 3.2% 2.4%;
 
-    display:flex;
-    flex-direction:column;
+  background:#fff;
 
-    background:#fff;
+  font-size:11.5px;
+  line-height:1.65;
 
-    font-size:10.5pt;
-    line-height:1.45;
+  color:#111;
 
-    color:#111;
+  font-family:Calibri,Arial,sans-serif;
 
-    position:relative;
+  display:flex;
+  flex-direction:column;
 }
 
 
-/* body grows naturally */
+/* Body grows to fill remaining height */
 .q-body{
+  flex:1 1 auto;
 
-    flex:1 1 auto;
+  display:flex;
+  flex-direction:column;
 
-    display:flex;
-    flex-direction:column;
-
-    min-height:0;
+  min-height:0;
 }
 
 
-/* remove artificial space balancing */
-.q-sp,
+/* 
+  Flex spacers:
+  คงไว้ เพราะ layout เดิมใช้ตัวนี้ถ่วงระยะให้ footer อยู่ตำแหน่งที่เหมาะสม
+*/
+.q-sp{
+  flex:1;
+  min-height:0;
+}
+
 .q-sp-lg{
-    display:none;
+  flex:0.5;
+  min-height:0;
 }
 
 
-/* =====================================================
-   HEADER
-   ===================================================== */
-
+/* ── Header ── */
 .q-hdr{
-    display:grid;
-    grid-template-columns:30mm 1fr 42mm;
-    gap:4mm;
+  display:grid;
+  grid-template-columns:98px 1fr auto;
+  align-items:flex-start;
 
-    align-items:start;
+  padding-bottom:7px;
 
-    padding-bottom:3mm;
-
-    border-bottom:.4mm solid #111;
+  border-bottom:2px solid #111;
 }
 
 .q-hdr-logo img{
-    height:16mm;
-    width:auto;
-    display:block;
+  height:60px;
+  width:auto;
+  display:block;
+}
+
+.q-hdr-company{
+  padding-left:12px;
 }
 
 .q-co-name{
-    font-size:13pt;
-    font-weight:700;
+  font-size:15px;
+  font-weight:700;
+  color:#111;
+  line-height:1.2;
+  margin-bottom:4px;
+}
+
+.q-addr-cols{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 12px;
+
+  font-size:9.5px;
+  color:#333;
+  line-height:1.6;
+}
+
+.q-addr-title{
+  font-weight:700;
+  color:#111;
+  font-size:9.5px;
+}
+
+.q-hdr-right{
+  text-align:right;
+  min-width:140px;
 }
 
 .q-doctype{
-    font-size:24pt;
-    font-weight:700;
-    line-height:1;
+  font-size:30px;
+  font-weight:700;
+  color:#111;
+  letter-spacing:1px;
+  line-height:1;
 }
 
 .q-docsub{
-    font-size:10pt;
+  font-size:13px;
+  font-weight:600;
+  color:#444;
+  text-align:right;
+  margin-top:3px;
 }
 
 
-/* =====================================================
-   INFO AREA
-   ===================================================== */
-
+/* ── Info row ── */
 .q-inforow{
-    display:grid;
-    grid-template-columns:1fr 1fr 1fr;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
 
-    padding:3mm 0;
+  padding:8px 0 7px;
 
-    border-bottom:.25mm solid #ccc;
+  border-bottom:1px solid #ccc;
+
+  font-size:10.5px;
+}
+
+.q-infocell{
+  display:flex;
+  gap:4px;
+  align-items:baseline;
+}
+
+.q-infocell .qi-label{
+  color:#444;
+  white-space:nowrap;
+}
+
+.q-infocell .qi-val{
+  font-weight:700;
+  color:#111;
+}
+
+.q-docinfo{
+  font-size:10px;
+  color:#333;
+  line-height:1.8;
+}
+
+.q-docinfo .di-row{
+  display:flex;
+  gap:4px;
+}
+
+.q-docinfo .di-k{
+  min-width:118px;
+  color:#444;
+}
+
+.q-docinfo .di-v{
+  font-weight:600;
+  color:#111;
 }
 
 .q-intro{
-    font-size:9pt;
+  font-size:10.5px;
+  color:#333;
+  line-height:1.6;
+}
+
+.q-baht-label{
+  text-align:right;
+  font-size:9.5px;
+  color:#555;
+  margin-bottom:3px;
 }
 
 
-/* =====================================================
-   TABLE
-   ===================================================== */
-
+/* ── Main table ── */
 .q-tbl{
-    width:100%;
-    border-collapse:collapse;
-    table-layout:fixed;
-    font-size:8.5pt;
+  width:100%;
+  border-collapse:collapse;
+  border:1px solid #999;
+
+  font-size:10px;
 }
 
 .q-tbl thead th{
+  background:#e6ecf4;
+  border:1px solid #999;
 
-    background:#e8edf5;
+  padding:7px 4px;
 
-    border:.25mm solid #999;
+  font-weight:700;
+  text-align:center;
+  vertical-align:middle;
 
-    padding:2mm 1mm;
-
-    text-align:center;
-
-    font-weight:700;
+  font-size:9.5px;
+  line-height:1.4;
+  color:#111;
 }
 
 .q-tbl tbody td{
+  border:1px solid #ccc;
 
-    border:.25mm solid #ccc;
+  padding:9px 4px;
 
-    padding:2mm 1mm;
+  vertical-align:middle;
 
-    vertical-align:middle;
-}
-
-.q-tbl td.ctr{
-    text-align:center;
+  font-size:10.5px;
+  color:#111;
 }
 
 .q-tbl td.num{
-    text-align:right;
+  text-align:right;
+  font-family:Calibri,Consolas,monospace;
+  font-size:10px;
+}
+
+.q-tbl td.ctr{
+  text-align:center;
 }
 
 
-/* =====================================================
-   RATE BOX
-   ===================================================== */
-
+/* ── Rate box ── */
 .q-ratebox{
-    border:.25mm solid #999;
+  border:1px solid #999;
 }
 
-.q-ratebox td{
-    padding:1.6mm 2mm;
+.q-ratebox table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:10px;
+}
+
+.q-ratebox table td{
+  padding:6px 10px;
+  vertical-align:middle;
+}
+
+.rb-key{
+  color:#333;
+  white-space:nowrap;
+  width:122px;
+}
+
+.rb-sep{
+  width:10px;
+  text-align:center;
+  color:#555;
+}
+
+.rb-val{
+  color:#111;
+}
+
+.rb-gap{
+  width:18px;
 }
 
 
-/* =====================================================
-   TERMS
-   ===================================================== */
+/* ── Terms ── */
+.q-subject{
+  font-size:10.5px;
+  font-weight:700;
+  color:#111;
+}
 
-.q-subject,
 .q-terms-hdr{
-    font-size:9pt;
+  font-size:10.5px;
+  font-weight:700;
+  text-decoration:underline;
+  color:#111;
+  margin-bottom:4px;
 }
 
-.q-terms{
-    font-size:8.7pt;
+.q-terms ol{
+  padding-left:15px;
+  font-size:10.5px;
+  color:#222;
+  line-height:1.7;
 }
 
 .q-terms li{
-    margin-bottom:1.2mm;
+  margin-bottom:7px;
+}
+
+.q-terms ul{
+  padding-left:15px;
+  margin-top:4px;
+}
+
+.q-terms ul li{
+  margin-bottom:3px;
 }
 
 
-/* =====================================================
-   SIGNATURE
-   ===================================================== */
-
+/* ── Signature ── */
 .q-sign{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
 
-    display:grid;
+  border-top:1.5px solid #999;
 
-    grid-template-columns:1fr 1fr;
+  padding-top:6px;
 
-    gap:12mm;
-
-    margin-top:auto;
-
-    padding-top:3mm;
-
-    border-top:.25mm solid #999;
-
-    page-break-inside:avoid;
+  break-inside:avoid;
+  page-break-inside:avoid;
 }
 
 .q-sign-col{
-    min-height:26mm;
+  display:flex;
+  flex-direction:column;
+  min-height:95px;
+}
+
+.q-sign-intro{
+  font-size:9.5px;
+  color:#000;
+  line-height:1.65;
+  white-space:pre-line;
+  text-align:center;
+  margin-bottom:2px;
+  font-weight:600;
 }
 
 .q-sign-spacer{
-    min-height:16mm;
+  flex:1;
+  min-height:50px;
+}
+
+.q-sign-line{
+  border-top:1px solid #000;
+  width:100%;
+  margin-bottom:3px;
+}
+
+.q-sign-name-block{
+  text-align:center;
+}
+
+.q-sign-name{
+  font-size:10.5px;
+  font-weight:700;
+  color:#000;
+}
+
+.q-sign-role{
+  font-size:9px;
+  color:#333;
+}
+
+.q-sign-row{
+  font-size:9.5px;
+  color:#000;
+
+  display:flex;
+  gap:8px;
+  align-items:baseline;
+
+  margin-top:2px;
+}
+
+.q-sign-row .sk{
+  min-width:62px;
+  color:#333;
+  font-weight:600;
+}
+
+.q-sign-row .sv{
+  font-weight:700;
+  color:#000;
 }
 
 
-/* =====================================================
-   FOOTER
-   ===================================================== */
-
+/* ── Footer with QR Code ── */
 .q-footer{
+  display:grid;
+  grid-template-columns:75px 1fr 75px;
+  gap:6px 10px;
 
-    display:grid;
+  border-top:0.5px solid #ddd;
 
-    grid-template-columns:
-        18mm
-        1fr
-        20mm;
+  padding-top:4px;
+  margin-top:6px;
 
-    gap:3mm;
+  align-items:flex-start;
 
-    align-items:start;
+  font-size:7.5px;
 
-    margin-top:4mm;
-
-    padding-top:2mm;
-
-    border-top:.25mm solid #ddd;
-
-    page-break-inside:avoid;
+  break-inside:avoid;
+  page-break-inside:avoid;
 }
 
+.q-footer-qr{
+  display:flex;
+  justify-content:flex-start;
+  align-items:flex-start;
 
-/* QR FIXED PHYSICAL SIZE */
+  width:55px;
+  height:55px;
 
-.q-footer-qr,
+  flex:none;
+}
+
 .q-footer-qrbox{
+  width:55px;
+  height:55px;
 
-    width:16mm;
-    height:16mm;
-
-    flex:none;
+  flex:none;
 }
 
 .q-footer-qr img,
 .q-footer-qrbox img,
 .q-footer-qr-image{
+  display:block;
 
-    width:16mm;
-    height:16mm;
+  width:55px;
+  height:55px;
 
-    min-width:16mm;
-    max-width:16mm;
+  min-width:55px;
+  max-width:55px;
 
-    min-height:16mm;
-    max-height:16mm;
+  min-height:55px;
+  max-height:55px;
 
-    display:block;
-
-    object-fit:contain;
+  object-fit:contain;
 }
 
 .q-footer-text{
+  grid-column:2;
 
-    font-size:6.5pt;
+  font-size:7.5px;
+  color:#333;
+  line-height:1.4;
+  text-align:justify;
+}
 
-    line-height:1.25;
-
-    text-align:justify;
+.q-footer-text a{
+  color:#0066cc;
+  text-decoration:none;
 }
 
 .q-footer-pagenum{
+  grid-column:3;
 
-    text-align:right;
+  text-align:right;
 
-    font-size:6.5pt;
+  font-size:7.5px;
+  color:#666;
+  font-weight:600;
 
-    white-space:nowrap;
+  white-space:nowrap;
 }
 
 
-/* =====================================================
-   PRINT
-   ===================================================== */
-
+/* ── PRINT ── */
 @page{
-    size:A4 portrait;
-    margin:0;
+  size:A4 portrait;
+  margin:5mm 6mm;
 }
 
 @media print{
 
-    html,
-    body{
-        margin:0;
-        padding:0;
-        background:#fff;
+  /*
+    ไม่ reset layout ด้านในเอกสาร
+    เพราะต้องการให้ screen preview กับ print ใช้ layout เดียวกัน
+  */
 
-        -webkit-print-color-adjust:exact;
-        print-color-adjust:exact;
-    }
+  html,
+  body{
+    margin:0 !important;
+    padding:0 !important;
 
-    .page-header,
-    .grid-main,
-    .btn-row,
-    .quote-controls,
-    #toast,
-    .no-print{
-        display:none !important;
-    }
+    background:#fff !important;
 
-    .app{
-        margin:0;
-        padding:0;
-        max-width:none;
-    }
+    font-family:Calibri,Arial,sans-serif !important;
 
-    .quote-section-outer{
-        margin:0;
-        padding:0;
-        background:#fff;
-    }
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
 
-    .quote-wrap{
 
-        width:210mm;
+  /*
+    ซ่อน UI ที่ไม่ใช่เอกสาร
+  */
+  .no-print,
+  #toast,
+  .quote-controls,
+  .page-header,
+  .grid-main,
+  .btn-row{
+    display:none !important;
+  }
 
-        height:297mm;
 
-        margin:0;
+  /*
+    ให้ container ครอบเอกสารไม่สร้าง margin/padding เพิ่ม
+  */
+  .app{
+    width:auto !important;
+    max-width:none !important;
 
-        border:none;
+    margin:0 !important;
+    padding:0 !important;
+  }
 
-        box-shadow:none;
-    }
+  .quote-section-outer{
+    width:auto !important;
 
-    table,
-    tr,
-    td,
-    th,
-    .q-sign,
-    .q-footer{
-        page-break-inside:avoid;
-    }
+    margin:0 !important;
+    padding:0 !important;
+
+    background:#fff !important;
+    border-radius:0 !important;
+  }
+
+
+  /*
+    Paper ตอน print:
+    ใช้ความกว้างเต็มพื้นที่ printable area
+    แต่ยังคง aspect ratio และ layout ภายในเดิม
+  */
+  .quote-wrap{
+    width:100% !important;
+    max-width:none !important;
+
+    margin:0 auto !important;
+
+    border:none !important;
+    border-radius:0 !important;
+    box-shadow:none !important;
+
+    overflow:hidden !important;
+
+    aspect-ratio:210 / 297 !important;
+
+    position:relative !important;
+  }
+
+
+  /*
+    สำคัญ:
+    ไม่เปลี่ยน font-size, padding, line-height ของ q-page
+    เพราะเป็นจุดที่ทำให้สัดส่วนเพี้ยนใน CSS เดิม
+  */
+  .q-page{
+    width:100% !important;
+    height:100% !important;
+
+    position:absolute !important;
+    top:0 !important;
+    left:0 !important;
+
+    padding:2.8% 3.2% 2.4% !important;
+
+    font-size:11.5px !important;
+    line-height:1.65 !important;
+  }
+
+
+  /*
+    Footer ยังคงใช้ Grid เหมือน screen
+    ห้ามเปลี่ยนเป็น flex เพราะจะทำให้ตำแหน่ง QR/Text/Page no. เพี้ยน
+  */
+  .q-footer{
+    display:grid !important;
+    grid-template-columns:75px 1fr 75px !important;
+    gap:6px 10px !important;
+
+    width:100% !important;
+
+    margin-top:6px !important;
+    padding-top:4px !important;
+
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
+
+
+  /*
+    Lock QR Code size
+    ป้องกัน Chrome desktop/mobile print resize รูป QR เอง
+  */
+  .q-footer-qr,
+  .q-footer-qrbox{
+    width:55px !important;
+    height:55px !important;
+
+    min-width:55px !important;
+    max-width:55px !important;
+
+    min-height:55px !important;
+    max-height:55px !important;
+
+    flex:none !important;
+
+    overflow:hidden !important;
+  }
+
+  .q-footer-qr img,
+  .q-footer-qrbox img,
+  .q-footer-qr-image{
+    display:block !important;
+
+    width:55px !important;
+    height:55px !important;
+
+    min-width:55px !important;
+    max-width:55px !important;
+
+    min-height:55px !important;
+    max-height:55px !important;
+
+    object-fit:contain !important;
+  }
+
+
+  /*
+    ป้องกัน block สำคัญแตกหน้า
+  */
+  table,
+  tr,
+  td,
+  th,
+  .q-sign,
+  .q-footer{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
 }
