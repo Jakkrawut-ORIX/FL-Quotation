@@ -305,22 +305,17 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
   @page {
     size: A4 portrait;
-    margin: 5mm 6mm;
+    margin: 6mm;
   }
 
-  * {
+
+  /* reset */
+  *,
+  *::before,
+  *::after {
     box-sizing: border-box!important;
   }
 
-  .no-print,
-  #toast,
-  .quote-controls,
-  .page-header,
-  .grid-main,
-  .btn-row,
-  .quote-section-outer > .no-print {
-    display:none!important;
-  }
 
   html,
   body {
@@ -335,8 +330,21 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
+  /* hide UI */
+  .no-print,
+  #toast,
+  .quote-controls,
+  .page-header,
+  .grid-main,
+  .btn-row,
+  .quote-section-outer > .no-print {
+    display:none!important;
+  }
+
+
   .app {
     width:100%!important;
+    max-width:none!important;
     padding:0!important;
     margin:0!important;
   }
@@ -346,120 +354,311 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     width:100%!important;
     padding:0!important;
     margin:0!important;
+    background:#fff!important;
   }
 
 
+
+  /* A4 paper */
   .quote-wrap {
+
     width:100%!important;
+    height:285mm!important;
+
     max-width:none!important;
+
+    margin:0!important;
+
     border:none!important;
+    border-radius:0!important;
     box-shadow:none!important;
-    border-radius:none!important;
+
+    overflow:hidden!important;
+
     aspect-ratio:auto!important;
+
     position:relative!important;
   }
 
 
+
+  /* page */
   .q-page {
+
+    position:absolute!important;
+
+    top:0;
+    left:0;
+
     width:100%!important;
-    min-height:0!important;
-    height:auto!important;
-    padding:0!important;
+    height:100%!important;
+
+    padding:5mm!important;
+
     margin:0!important;
+
+    display:flex!important;
+    flex-direction:column!important;
+
     font-size:8pt!important;
+
+    line-height:1.4!important;
+
   }
 
 
-  /* Header */
+
+  /* body area */
+  .q-body {
+
+    flex:1 1 auto!important;
+
+    min-height:0!important;
+
+    overflow:hidden!important;
+
+  }
+
+
+
+  /* remove flexible spaces during print */
+  .q-sp,
+  .q-sp-lg {
+
+    display:none!important;
+
+  }
+
+
+
+  /* HEADER */
   .q-hdr-logo img {
+
     height:42px!important;
+
   }
+
 
   .q-co-name {
+
     font-size:10pt!important;
+
   }
+
 
   .q-doctype {
+
     font-size:18pt!important;
+
   }
 
 
-  /* Table */
+  .q-addr-cols,
+  .q-inforow {
+
+    font-size:7pt!important;
+
+  }
+
+
+
+  /* INFO */
+  .q-intro {
+
+    font-size:7.5pt!important;
+
+  }
+
+
+
+  /* TABLE */
   .q-tbl {
+
     width:100%!important;
+
     table-layout:fixed!important;
+
+    font-size:7pt!important;
+
   }
+
 
   .q-tbl thead th {
+
     font-size:6.5pt!important;
+
     padding:2px!important;
+
   }
+
 
   .q-tbl tbody td {
+
     font-size:7pt!important;
+
     padding:3px 2px!important;
+
     word-break:break-word!important;
+
   }
 
 
-  .q-intro {
-    font-size:7.5pt!important;
-  }
 
+  /* RATE */
+  .q-ratebox table td {
 
-  .q-terms,
-  .q-terms ol,
-  .q-terms-hdr,
-  .q-subject {
     font-size:7pt!important;
+
+    padding:3px 5px!important;
+
   }
 
 
-  /* Footer */
-  .q-footer {
-    display:flex!important;
-    align-items:center!important;
-    gap:6px!important;
-    margin-top:3pt!important;
-    width:100%!important;
+
+  /* TERMS */
+  .q-subject,
+  .q-terms-hdr,
+  .q-terms ol {
+
+    font-size:7pt!important;
+
+  }
+
+
+  .q-terms li {
+
+    margin-bottom:3px!important;
+
+  }
+
+
+
+  /* SIGNATURE */
+  .q-sign {
+
+    flex:none!important;
+
+    margin-top:3mm!important;
+
+    padding-top:4px!important;
+
     page-break-inside:avoid!important;
+
+  }
+
+
+  .q-sign-col {
+
+    min-height:75px!important;
+
+  }
+
+
+  .q-sign-spacer {
+
+    min-height:30px!important;
+
+  }
+
+
+
+  /* FOOTER */
+  .q-footer {
+
+    flex:none!important;
+
+    display:grid!important;
+
+    grid-template-columns:55px 1fr 55px!important;
+
+    gap:6px!important;
+
+    align-items:center!important;
+
+    width:100%!important;
+
+    height:55px!important;
+
+    margin-top:4px!important;
+
+    padding-top:3px!important;
+
+    border-top:0.5pt solid #ddd!important;
+
+    page-break-before:avoid!important;
+
+    page-break-after:avoid!important;
+
+    page-break-inside:avoid!important;
+
   }
 
 
   .q-footer-qr {
-    flex:0 0 55px!important;
+
+    grid-column:1!important;
+
     width:55px!important;
+
     height:55px!important;
+
+    display:flex!important;
+
+    align-items:center!important;
+
+    justify-content:flex-start!important;
+
   }
 
 
   .q-footer-qr-image {
+
     width:55px!important;
+
     height:55px!important;
+
+    object-fit:contain!important;
+
   }
 
 
   .q-footer-text {
-    flex:1!important;
-    font-size:5.8pt!important;
+
+    grid-column:2!important;
+
+    font-size:5.5pt!important;
+
     line-height:1.15!important;
+
+    color:#333!important;
+
+    text-align:justify!important;
+
   }
 
 
   .q-footer-pagenum {
+
+    grid-column:3!important;
+
     font-size:6pt!important;
+
     white-space:nowrap!important;
+
+    text-align:right!important;
+
   }
 
 
-  .q-sign {
-    margin-top:5pt!important;
-    page-break-inside:avoid!important;
-  }
 
+  /* prevent page breaks */
+  table,
+  tr,
+  .q-sign,
+  .q-footer {
 
-  tr {
     page-break-inside:avoid!important;
+
   }
 
 }
