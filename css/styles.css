@@ -271,12 +271,12 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:40px;
-  border-top:1.5px solid #999;
+  border-top:0.5px solid #999;
   padding-top:6px;
 }
 .q-sign-col{display:flex;flex-direction:column;min-height:95px;}
 .q-sign-intro{font-size:9.5px;color:#000;line-height:1.65;white-space:pre-line;text-align:center;margin-bottom:2px;font-weight:600;}
-.q-sign-spacer{flex:1;min-height:50px;}
+.q-sign-spacer{flex:1;min-height:55px;}
 .q-sign-line{border-top:1px solid #000;width:100%;margin-bottom:3px;}
 .q-sign-name-block{text-align:center;}
 .q-sign-name{font-size:10.5px;font-weight:700;color:#000;}
