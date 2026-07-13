@@ -563,102 +563,64 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /* FOOTER */
-  .q-footer {
+.q-footer {
+  display: grid !important;
+  grid-template-columns: 38px 1fr 45px !important;
+  align-items: start !important;
+  gap: 4px !important;
 
-    flex:none!important;
+  width: 100% !important;
 
-    display:grid!important;
+  margin-top: 3px !important;
+  padding-top: 3px !important;
 
-    grid-template-columns:55px 1fr 55px!important;
+  border-top: 0.5pt solid #ddd !important;
 
-    gap:6px!important;
+  page-break-inside: avoid !important;
+  page-break-before: avoid !important;
+  page-break-after: avoid !important;
+}
 
-    align-items:center!important;
+.q-footer-qr {
+  width: 32px !important;
+  height: 32px !important;
 
-    width:100%!important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+}
 
-    height:55px!important;
+.q-footer-qrbox {
+  width: 32px !important;
+  height: 32px !important;
+}
 
-    margin-top:4px!important;
+.q-footer-qr-image {
+  display: block !important;
+  width: 32px !important;
+  height: 32px !important;
+  max-width: 32px !important;
+  max-height: 32px !important;
+  object-fit: contain !important;
+}
 
-    padding-top:3px!important;
+.q-footer-text {
+  font-size: 5.5pt !important;
+  line-height: 1.15 !important;
+  color: #333 !important;
+  text-align: justify !important;
+}
 
-    border-top:0.5pt solid #ddd!important;
+.q-footer-pagenum {
+  font-size: 6pt !important;
+  text-align: right !important;
+  white-space: nowrap !important;
+}
 
-    page-break-before:avoid!important;
-
-    page-break-after:avoid!important;
-
-    page-break-inside:avoid!important;
-
-  }
-
-
-  .q-footer-qr {
-
-    grid-column:1!important;
-
-    width:55px!important;
-
-    height:55px!important;
-
-    display:flex!important;
-
-    align-items:center!important;
-
-    justify-content:flex-start!important;
-
-  }
-
-
-  .q-footer-qr-image {
-
-    width:55px!important;
-
-    height:55px!important;
-
-    object-fit:contain!important;
-
-  }
-
-
-  .q-footer-text {
-
-    grid-column:2!important;
-
-    font-size:5.5pt!important;
-
-    line-height:1.15!important;
-
-    color:#333!important;
-
-    text-align:justify!important;
-
-  }
-
-
-  .q-footer-pagenum {
-
-    grid-column:3!important;
-
-    font-size:6pt!important;
-
-    white-space:nowrap!important;
-
-    text-align:right!important;
-
-  }
-
-
-
-  /* prevent page breaks */
-  table,
-  tr,
-  .q-sign,
-  .q-footer {
-
-    page-break-inside:avoid!important;
-
-  }
-
+/* Prevent page breaks */
+table,
+tr,
+.q-sign,
+.q-footer {
+  page-break-inside: avoid !important;
 }
