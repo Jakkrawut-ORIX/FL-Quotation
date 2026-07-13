@@ -301,74 +301,165 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 .q-footer-pagenum{grid-column:3;text-align:right;font-size:7.5px;color:#666;font-weight:600;}
 
 /* ── PRINT ── */
-@media print{
-  @page{size:A4 portrait;margin:10mm 12mm;}
-  .no-print,#toast,.quote-controls,.page-header,.grid-main,.btn-row,
-  .quote-section-outer > .no-print{display:none!important;}
-  html,body{background:#fff!important;font-family:Calibri,Arial,sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .app{padding:0!important;margin:0!important;max-width:100%!important;}
-  .quote-section-outer{background:#fff!important;padding:0!important;margin:0!important;}
-  .quote-wrap{
-    border:none!important;box-shadow:none!important;border-radius:0!important;
-    max-width:100%!important;width:100%!important;
-    aspect-ratio:unset!important;
-    position:static!important;
+@media print {
+
+  @page {
+    size: A4 portrait;
+    margin: 5mm 6mm;
   }
-  .q-page{
-    position:static!important;
-    height:auto!important;
-    min-height:calc(297mm - 20mm)!important;
+
+  * {
+    box-sizing: border-box!important;
+  }
+
+  .no-print,
+  #toast,
+  .quote-controls,
+  .page-header,
+  .grid-main,
+  .btn-row,
+  .quote-section-outer > .no-print {
+    display:none!important;
+  }
+
+  html,
+  body {
+    width:210mm!important;
+    height:297mm!important;
+    margin:0!important;
     padding:0!important;
-    font-size:8.5pt!important;
+    background:#fff!important;
+    font-family:Calibri,Arial,sans-serif!important;
+    -webkit-print-color-adjust:exact!important;
+    print-color-adjust:exact!important;
   }
-  .q-hdr-logo img{height:46px!important;}
-  .q-co-name{font-size:11pt!important;}
-  .q-doctype{font-size:20pt!important;}
-  .q-addr-cols,.q-inforow{font-size:7.5pt!important;}
-  .q-tbl thead th{font-size:7pt!important;padding:3px 2px!important;}
-  .q-tbl tbody td{font-size:7.5pt!important;padding:5px 3px!important;}
-  .q-ratebox table td{font-size:7.5pt!important;padding:3px 6px!important;}
-  .q-intro{font-size:8pt!important;}
-  .q-terms ol,.q-terms-hdr,.q-subject{font-size:7.5pt!important;}
-  .q-sp,.q-sp-lg{display:none!important;}
-  .q-sign{margin-top:auto!important;border-top:1px solid #ccc!important;}
-  .q-footer{margin-top:4pt!important;border-top:0.5pt solid #ccc!important;}
-  .q-footer-text{font-size:6.5pt!important;line-height:1.3!important;}
-  .q-footer-qr{width:70px!important;height:70px!important;}
-  tr,.q-sign,.q-footer{page-break-inside:avoid;}
-}
 
 
-.q-footer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-}
+  .app {
+    width:100%!important;
+    padding:0!important;
+    margin:0!important;
+  }
 
-.q-footer-qr {
-  flex: 0 0 auto;
-}
 
-.q-footer-qrbox {
-  width: 80px;
-  height: 80px;
-}
+  .quote-section-outer {
+    width:100%!important;
+    padding:0!important;
+    margin:0!important;
+  }
 
-.q-footer-qr-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
 
-.q-footer-text {
-  flex: 1;
-  font-size: 10px;
-  line-height: 1.4;
-}
+  .quote-wrap {
+    width:100%!important;
+    max-width:none!important;
+    border:none!important;
+    box-shadow:none!important;
+    border-radius:none!important;
+    aspect-ratio:auto!important;
+    position:relative!important;
+  }
 
-.q-footer-pagenum {
-  flex: 0 0 auto;
-  white-space: nowrap;
+
+  .q-page {
+    width:100%!important;
+    min-height:0!important;
+    height:auto!important;
+    padding:0!important;
+    margin:0!important;
+    font-size:8pt!important;
+  }
+
+
+  /* Header */
+  .q-hdr-logo img {
+    height:42px!important;
+  }
+
+  .q-co-name {
+    font-size:10pt!important;
+  }
+
+  .q-doctype {
+    font-size:18pt!important;
+  }
+
+
+  /* Table */
+  .q-tbl {
+    width:100%!important;
+    table-layout:fixed!important;
+  }
+
+  .q-tbl thead th {
+    font-size:6.5pt!important;
+    padding:2px!important;
+  }
+
+  .q-tbl tbody td {
+    font-size:7pt!important;
+    padding:3px 2px!important;
+    word-break:break-word!important;
+  }
+
+
+  .q-intro {
+    font-size:7.5pt!important;
+  }
+
+
+  .q-terms,
+  .q-terms ol,
+  .q-terms-hdr,
+  .q-subject {
+    font-size:7pt!important;
+  }
+
+
+  /* Footer */
+  .q-footer {
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    margin-top:3pt!important;
+    width:100%!important;
+    page-break-inside:avoid!important;
+  }
+
+
+  .q-footer-qr {
+    flex:0 0 55px!important;
+    width:55px!important;
+    height:55px!important;
+  }
+
+
+  .q-footer-qr-image {
+    width:55px!important;
+    height:55px!important;
+  }
+
+
+  .q-footer-text {
+    flex:1!important;
+    font-size:5.8pt!important;
+    line-height:1.15!important;
+  }
+
+
+  .q-footer-pagenum {
+    font-size:6pt!important;
+    white-space:nowrap!important;
+  }
+
+
+  .q-sign {
+    margin-top:5pt!important;
+    page-break-inside:avoid!important;
+  }
+
+
+  tr {
+    page-break-inside:avoid!important;
+  }
+
 }
