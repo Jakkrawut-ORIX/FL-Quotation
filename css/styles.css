@@ -337,3 +337,15 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   .q-footer-qr{width:70px!important;height:70px!important;}
   tr,.q-sign,.q-footer{page-break-inside:avoid;}
 }
+
+
+.q-footer-qrbox {
+  width: 80px;
+  height: 80px;
+}
+
+.q-footer-qr-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
