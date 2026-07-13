@@ -563,64 +563,61 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /* FOOTER */
-.q-footer {
-  display: grid !important;
-  grid-template-columns: 38px 1fr 45px !important;
-  align-items: start !important;
-  gap: 4px !important;
+.q-footer{
+    display:grid !important;
+    grid-template-columns:28px 1fr 38px !important;
+    gap:6px !important;
+    align-items:flex-start !important;
 
-  width: 100% !important;
+    width:100% !important;
 
-  margin-top: 3px !important;
-  padding-top: 3px !important;
+    margin-top:2px !important;
+    padding-top:2px !important;
 
-  border-top: 0.5pt solid #ddd !important;
+    border-top:.5pt solid #ddd !important;
 
-  page-break-inside: avoid !important;
-  page-break-before: avoid !important;
-  page-break-after: avoid !important;
+    page-break-inside:avoid !important;
 }
 
-.q-footer-qr {
-  width: 32px !important;
-  height: 32px !important;
-
-  display: flex !important;
-  align-items: flex-start !important;
-  justify-content: flex-start !important;
+.q-footer-qr{
+    width:24px !important;
+    height:24px !important;
+    overflow:hidden !important;
 }
 
-.q-footer-qrbox {
-  width: 32px !important;
-  height: 32px !important;
+.q-footer-qrbox{
+    width:24px !important;
+    height:24px !important;
+    overflow:hidden !important;
 }
 
-.q-footer-qr-image {
-  display: block !important;
-  width: 32px !important;
-  height: 32px !important;
-  max-width: 32px !important;
-  max-height: 32px !important;
-  object-fit: contain !important;
+.q-footer-qrbox img,
+.q-footer-qr-image{
+    display:block !important;
+    width:24px !important;
+    height:24px !important;
+    min-width:24px !important;
+    min-height:24px !important;
+    max-width:24px !important;
+    max-height:24px !important;
+    object-fit:contain !important;
 }
 
-.q-footer-text {
-  font-size: 5.5pt !important;
-  line-height: 1.15 !important;
-  color: #333 !important;
-  text-align: justify !important;
+.q-footer-text{
+    font-size:5.5pt !important;
+    line-height:1.15 !important;
+    text-align:justify !important;
 }
 
-.q-footer-pagenum {
-  font-size: 6pt !important;
-  text-align: right !important;
-  white-space: nowrap !important;
+.q-footer-pagenum{
+    font-size:6pt !important;
+    text-align:right !important;
+    white-space:nowrap !important;
 }
 
-/* Prevent page breaks */
 table,
 tr,
 .q-sign,
-.q-footer {
-  page-break-inside: avoid !important;
+.q-footer{
+    page-break-inside:avoid !important;
 }
