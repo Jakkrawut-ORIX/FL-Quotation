@@ -339,6 +339,17 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
+.q-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+.q-footer-qr {
+  flex: 0 0 auto;
+}
+
 .q-footer-qrbox {
   width: 80px;
   height: 80px;
@@ -347,5 +358,17 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 .q-footer-qr-image {
   width: 100%;
   height: 100%;
+  object-fit: contain;
   display: block;
+}
+
+.q-footer-text {
+  flex: 1;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.q-footer-pagenum {
+  flex: 0 0 auto;
+  white-space: nowrap;
 }
