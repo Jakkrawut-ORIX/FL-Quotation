@@ -466,7 +466,7 @@ async exportExcel() {
 
     await addImageIfExists(qs, 'orix_logo.png', {
   tl: { col: 0.25, row: 0.8 },
-  ext: { width: 44, height: 50 }
+  ext: { width: 78, height: 74 }
 });
 
     /* Info row */
