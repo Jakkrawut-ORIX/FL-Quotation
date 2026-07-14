@@ -669,22 +669,43 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
 /* ── PRINT ── */
+
+/*
+  Important:
+  Chrome / printer driver may still default to Letter.
+  CSS cannot force the user's printer dialog to A4 100%.
+
+  This print layout uses a safe physical A4 canvas,
+  then scales it slightly so it will not overflow even if
+  Chrome prints on Letter by mistake.
+*/
+
 @page{
-  size:A4 portrait;
-  margin:5mm 6mm;
+  size:210mm 297mm;
+  margin:0;
 }
 
 @media print{
 
   /*
-    ไม่ reset layout ด้านในเอกสาร
-    เพราะต้องการให้ screen preview กับ print ใช้ layout เดียวกัน
+    Scale factor:
+    0.92 is safe for Letter height:
+    297mm × 0.92 = 273.24mm
+    Letter height = 279.4mm
+
+    So it stays on page 1 even if paper is Letter.
   */
+  :root{
+    --print-scale:0.92;
+  }
 
   html,
   body{
     margin:0 !important;
     padding:0 !important;
+
+    width:100% !important;
+    height:100% !important;
 
     background:#fff !important;
 
@@ -694,9 +715,8 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     print-color-adjust:exact !important;
   }
 
-
   /*
-    ซ่อน UI ที่ไม่ใช่เอกสาร
+    Hide all non-document UI
   */
   .no-print,
   #toast,
@@ -707,39 +727,54 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     display:none !important;
   }
 
-
   /*
-    ให้ container ครอบเอกสารไม่สร้าง margin/padding เพิ่ม
+    Remove app spacing
   */
   .app{
-    width:auto !important;
+    width:100% !important;
     max-width:none !important;
 
     margin:0 !important;
     padding:0 !important;
   }
 
-  .quote-section-outer{
-    width:auto !important;
+  /*
+    This wrapper becomes the physical print viewport.
 
-    margin:0 !important;
+    Because transform:scale() does not affect layout size,
+    the wrapper must use the scaled size explicitly:
+
+    210mm × 0.92 = 193.2mm
+    297mm × 0.92 = 273.24mm
+  */
+  .quote-section-outer{
+    width:193.2mm !important;
+    height:273.24mm !important;
+
+    margin:0 auto !important;
     padding:0 !important;
 
     background:#fff !important;
     border-radius:0 !important;
+
+    overflow:hidden !important;
   }
 
-
   /*
-    Paper ตอน print:
-    ใช้ความกว้างเต็มพื้นที่ printable area
-    แต่ยังคง aspect ratio และ layout ภายในเดิม
+    Keep the document itself as true A4 internally.
+    Then scale the whole A4 paper down for print safety.
   */
   .quote-wrap{
-    width:100% !important;
-    max-width:none !important;
+    width:210mm !important;
+    height:297mm !important;
 
-    margin:0 auto !important;
+    min-width:210mm !important;
+    max-width:210mm !important;
+
+    min-height:297mm !important;
+    max-height:297mm !important;
+
+    margin:0 !important;
 
     border:none !important;
     border-radius:0 !important;
@@ -747,16 +782,18 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
     overflow:hidden !important;
 
-    aspect-ratio:210 / 297 !important;
+    aspect-ratio:auto !important;
 
     position:relative !important;
+
+    transform:scale(var(--print-scale)) !important;
+    transform-origin:top left !important;
   }
 
-
   /*
-    สำคัญ:
-    ไม่เปลี่ยน font-size, padding, line-height ของ q-page
-    เพราะเป็นจุดที่ทำให้สัดส่วนเพี้ยนใน CSS เดิม
+    Keep original document proportions.
+    Do not shrink fonts individually.
+    Do not remove padding.
   */
   .q-page{
     width:100% !important;
@@ -772,10 +809,8 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     line-height:1.65 !important;
   }
 
-
   /*
-    Footer ยังคงใช้ Grid เหมือน screen
-    ห้ามเปลี่ยนเป็น flex เพราะจะทำให้ตำแหน่ง QR/Text/Page no. เพี้ยน
+    Keep footer layout exactly like screen.
   */
   .q-footer{
     display:grid !important;
@@ -791,10 +826,9 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     break-inside:avoid !important;
   }
 
-
   /*
-    Lock QR Code size
-    ป้องกัน Chrome desktop/mobile print resize รูป QR เอง
+    Lock QR size before page scaling.
+    Final visible size will scale together with the whole document.
   */
   .q-footer-qr,
   .q-footer-qrbox{
@@ -829,9 +863,8 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     object-fit:contain !important;
   }
 
-
   /*
-    ป้องกัน block สำคัญแตกหน้า
+    Avoid breaking important blocks.
   */
   table,
   tr,
