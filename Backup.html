@@ -545,7 +545,7 @@ function onTermUnitChange(oldUnit,newUnit){
   if($('termVal')._formatted)$('termVal').value=formatWithComma(String(nv));
 }
 
-function apply(lang){
+function applyQuoteLang(lang){
   var TH=lang==='TH';
   setText('q_co_name',TH?'บริษัท ไทยโอริกซ์ลีสซิ่ง จำกัด':'THAI ORIX LEASING CO., LTD.');
   setText('q_doctype',TH?'ใบเสนอราคา':'QUOTATION');
@@ -657,7 +657,7 @@ function recalc(){
   // date is optional — show blank if not filled in
   var issueDisp=issueDate?issueDate.split('-').reverse().join('/'):'';
   var lang=$('quoteLang')?$('quoteLang').value:'TH';
-  var TH=lang==='EN';
+  var TH=lang==='TH';
 
   setText('q_to',custName);setText('q_from',fromName);
   setText('q_no',quotationNo||'');setText('q_issue',issueDisp);
@@ -1048,7 +1048,7 @@ window.addEventListener('DOMContentLoaded', () => {
 </script>
   
 <script src="./js/vendor/qrcode.min.js"></script>
-  https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.jsscript>
+https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.jsscript>
 <script type="module" src="./js/app.js"></script>
 
 </body>
