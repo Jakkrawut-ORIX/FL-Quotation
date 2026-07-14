@@ -465,9 +465,9 @@ async exportExcel() {
     qs.getRow(4).height = 20;
 
     await addImageIfExists(qs, 'orix_logo.png', {
-      tl: { col: 0.1, row: 0.4 },
-      ext: { width: 110, height: 55 }
-    });
+  tl: { col: 0.25, row: 0.8 },
+  ext: { width: 115, height: 31 }
+});
 
     /* Info row */
     qs.mergeCells('A6:C6');
