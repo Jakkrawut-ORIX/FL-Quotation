@@ -671,13 +671,14 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 /* ── PRINT ── */
 
 /*
-  Important:
-  Chrome / printer driver may still default to Letter.
-  CSS cannot force the user's printer dialog to A4 100%.
+  Print Strategy
 
-  This print layout uses a safe physical A4 canvas,
-  then scales it slightly so it will not overflow even if
-  Chrome prints on Letter by mistake.
+  - Internal document remains true A4: 210mm × 297mm
+  - Print output is scaled down slightly to avoid page 2
+    when Chrome / printer defaults to Letter.
+  - Do not override typography, table spacing, header size,
+    or page padding individually.
+  - Keep screen and print layout as close as possible.
 */
 
 @page{
@@ -689,16 +690,23 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
   /*
     Scale factor:
-    0.92 is safe for Letter height:
-    297mm × 0.92 = 273.24mm
-    Letter height = 279.4mm
+    0.92 keeps A4 height inside Letter height.
 
-    So it stays on page 1 even if paper is Letter.
+    A4 height:    297mm
+    297 × 0.92 = 273.24mm
+    Letter height: 279.4mm
+
+    This prevents footer/content from flowing to page 2
+    if Chrome accidentally uses Letter.
   */
   :root{
     --print-scale:0.92;
   }
 
+
+  /*
+    Basic print reset
+  */
   html,
   body{
     margin:0 !important;
@@ -715,8 +723,9 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     print-color-adjust:exact !important;
   }
 
+
   /*
-    Hide all non-document UI
+    Hide non-document UI
   */
   .no-print,
   #toast,
@@ -727,8 +736,9 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     display:none !important;
   }
 
+
   /*
-    Remove app spacing
+    Remove application spacing
   */
   .app{
     width:100% !important;
@@ -738,11 +748,12 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     padding:0 !important;
   }
 
+
   /*
-    This wrapper becomes the physical print viewport.
+    Print viewport wrapper
 
     Because transform:scale() does not affect layout size,
-    the wrapper must use the scaled size explicitly:
+    this wrapper must use the scaled physical size.
 
     210mm × 0.92 = 193.2mm
     297mm × 0.92 = 273.24mm
@@ -760,9 +771,12 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     overflow:hidden !important;
   }
 
+
   /*
-    Keep the document itself as true A4 internally.
-    Then scale the whole A4 paper down for print safety.
+    A4 document canvas
+
+    Keep the actual document as true A4 internally,
+    then scale the whole page down for print safety.
   */
   .quote-wrap{
     width:210mm !important;
@@ -790,10 +804,17 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     transform-origin:top left !important;
   }
 
+
   /*
-    Keep original document proportions.
-    Do not shrink fonts individually.
+    Keep original document proportions
+
+    Important:
+    Do not shrink font-size here.
     Do not remove padding.
+    Do not change line-height.
+
+    These were the main reasons the previous print layout
+    became compressed and visually different from screen.
   */
   .q-page{
     width:100% !important;
@@ -807,102 +828,226 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
     font-size:11.5px !important;
     line-height:1.65 !important;
+
+    background:#fff !important;
+    color:#111 !important;
+
+    display:flex !important;
+    flex-direction:column !important;
   }
 
-  /* ── Footer with QR Code ── */
-.q-footer{
-  display:grid;
-  grid-template-columns:75px 1fr 75px;
-  gap:6px 10px;
-
-  border-top:0.5px solid #ddd;
-
-  padding-top:4px;
-  margin-top:6px;
 
   /*
-    เดิมใช้ flex-start ทำให้ข้อความชิดบน QR
-    เปลี่ยนเป็น center เพื่อให้ข้อความอยู่กึ่งกลางแนวตั้งกับ QR
+    Keep body flexible
   */
-  align-items:center;
+  .q-body{
+    flex:1 1 auto !important;
 
-  font-size:7.5px;
+    display:flex !important;
+    flex-direction:column !important;
 
-  break-inside:avoid;
-  page-break-inside:avoid;
-}
+    min-height:0 !important;
 
-.q-footer-qr{
-  display:flex;
-  justify-content:flex-start;
-  align-items:center;
+    overflow:hidden !important;
+  }
 
-  width:55px;
-  height:55px;
-
-  flex:none;
-}
-
-.q-footer-qrbox{
-  width:55px;
-  height:55px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
-  flex:none;
-}
-
-.q-footer-qr img,
-.q-footer-qrbox img,
-.q-footer-qr-image{
-  display:block;
-
-  width:55px;
-  height:55px;
-
-  min-width:55px;
-  max-width:55px;
-
-  min-height:55px;
-  max-height:55px;
-
-  object-fit:contain;
-}
-
-.q-footer-text{
-  grid-column:2;
-
-  font-size:7.5px;
-  color:#333;
-  line-height:1.4;
-  text-align:justify;
 
   /*
-    ให้ข้อความจัดกลางในแนวตั้งภายในช่องของตัวเอง
+    Keep existing spacers.
+    Do not remove them in print because the screen layout
+    already depends on them for vertical balancing.
   */
-  align-self:center;
-}
+  .q-sp{
+    flex:1 !important;
+    min-height:0 !important;
+  }
 
-.q-footer-text a{
-  color:#0066cc;
-  text-decoration:none;
-}
+  .q-sp-lg{
+    flex:0.5 !important;
+    min-height:0 !important;
+  }
 
-.q-footer-pagenum{
-  grid-column:3;
-
-  text-align:right;
-
-  font-size:7.5px;
-  color:#666;
-  font-weight:600;
-
-  white-space:nowrap;
 
   /*
-    ให้เลขหน้าอยู่กึ่งกลางแนวตั้งกับ QR เช่นกัน
+    Signature should stay together
   */
-  align-self:center;
+  .q-sign{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
+
+
+  /*
+    Footer layout
+
+    Keep Grid exactly like screen.
+    Do not switch to flex in print.
+  */
+  .q-footer{
+    display:grid !important;
+    grid-template-columns:75px 1fr 75px !important;
+    gap:6px 10px !important;
+
+    width:100% !important;
+
+    margin-top:6px !important;
+    padding-top:4px !important;
+
+    border-top:0.5px solid #ddd !important;
+
+    /*
+      Align QR, footer text, and page number
+      on the same vertical center line.
+    */
+    align-items:center !important;
+
+    font-size:7.5px !important;
+
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
+
+
+  /*
+    QR column
+  */
+  .q-footer-qr{
+    display:flex !important;
+    justify-content:flex-start !important;
+    align-items:center !important;
+
+    width:55px !important;
+    height:55px !important;
+
+    min-width:55px !important;
+    max-width:55px !important;
+
+    min-height:55px !important;
+    max-height:55px !important;
+
+    flex:none !important;
+
+    overflow:hidden !important;
+  }
+
+
+  /*
+    QR box, if your HTML has an inner wrapper
+  */
+  .q-footer-qrbox{
+    width:55px !important;
+    height:55px !important;
+
+    min-width:55px !important;
+    max-width:55px !important;
+
+    min-height:55px !important;
+    max-height:55px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    flex:none !important;
+
+    overflow:hidden !important;
+  }
+
+
+  /*
+    QR image fixed size
+
+    The QR is locked at 55px inside the A4 canvas.
+    The whole document is then scaled together by --print-scale.
+  */
+  .q-footer-qr img,
+  .q-footer-qrbox img,
+  .q-footer-qr-image{
+    display:block !important;
+
+    width:55px !important;
+    height:55px !important;
+
+    min-width:55px !important;
+    max-width:55px !important;
+
+    min-height:55px !important;
+    max-height:55px !important;
+
+    object-fit:contain !important;
+  }
+
+
+  /*
+    Footer text
+
+    Make the text area the same height as the QR,
+    then vertically center the text inside it.
+  */
+  .q-footer-text{
+    grid-column:2 !important;
+
+    min-height:55px !important;
+
+    display:flex !important;
+    flex-direction:column !important;
+    justify-content:center !important;
+
+    font-size:7.5px !important;
+    line-height:1.4 !important;
+
+    color:#333 !important;
+    text-align:justify !important;
+  }
+
+
+  /*
+    Prevent nested footer text elements from adding extra margin
+  */
+  .q-footer-text p,
+  .q-footer-text div{
+    margin:0 !important;
+  }
+
+
+  .q-footer-text a{
+    color:#0066cc !important;
+    text-decoration:none !important;
+  }
+
+
+  /*
+    Page number aligned vertically with QR
+  */
+  .q-footer-pagenum{
+    grid-column:3 !important;
+
+    min-height:55px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:flex-end !important;
+
+    text-align:right !important;
+
+    font-size:7.5px !important;
+    color:#666 !important;
+    font-weight:600 !important;
+
+    white-space:nowrap !important;
+  }
+
+
+  /*
+    Prevent important blocks from splitting
+  */
+  table,
+  tr,
+  td,
+  th,
+  .q-sign,
+  .q-footer{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
 }
