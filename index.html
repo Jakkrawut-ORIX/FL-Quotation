@@ -5,329 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Financial Lease Calculator | Thai ORIX</title>
 
-<style>
-:root {
-  --blue:#01478c; --blue-mid:#0158a8; --blue-dim:#e8f0f9; --blue-soft:#c8ddf5;
-  --bg:#eaecf0; --surface:#ffffff; --surface2:#f4f6fa; --surface3:#f7f9fc;
-  --border:#dde2ea; --border2:#c8d0dc;
-  --txt:#0d1b2e; --muted:#6b7585; --muted2:#475264;
-  --green:#22a37d; --green-dim:#e6f5f0; --amber:#e8a020; --amber-dim:#fef3e2;
-  --red:#c0021a; --red-dim:#fde8eb; --purple:#6d28d9;
-  --font:Calibri,Arial,sans-serif;
-  --mono:Calibri,Consolas,monospace;
-  --rad:10px; --rad-sm:6px;
-  --shadow-sm:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
-  --shadow:0 2px 8px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.04);
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html,body{background:var(--bg);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh;}
-.app{max-width:1220px;margin:0 auto;padding:24px 18px 100px;}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
-.ph-left h1{font-size:21px;font-weight:700;letter-spacing:-0.3px;color:var(--txt);line-height:1.2;}
-.ph-left h1 span{color:var(--blue);}
-.ph-left p{color:var(--muted);font-size:12px;margin-top:3px;}
-.ph-badge{display:inline-flex;align-items:center;gap:6px;background:var(--blue-dim);color:var(--blue);font-size:11px;font-weight:600;padding:5px 10px;border-radius:20px;border:1px solid var(--blue-soft);white-space:nowrap;flex-shrink:0;}
-.grid-main{display:grid;grid-template-columns:1fr 360px;gap:16px;}
-@media(max-width:920px){.grid-main{grid-template-columns:1fr;}}
-
-/* ─── Card ─── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:0;box-shadow:var(--shadow-sm);overflow:hidden;}
-.card+.card{margin-top:10px;}
-.card-hdr{
-  display:flex;align-items:center;gap:8px;
-  padding:8px 14px;
-  background:var(--surface2);
-  border-bottom:1px solid var(--border);
-  font-size:10px;text-transform:uppercase;letter-spacing:1.1px;color:var(--muted);font-weight:700;
-}
-.card-hdr .ch-icon{
-  width:22px;height:22px;border-radius:6px;
-  display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;
-}
-.ch-green{background:#d4f0e7;color:var(--green);}
-.ch-blue{background:#d8e8f6;color:var(--blue);}
-.ch-amber{background:#fdeec7;color:#a06000;}
-.ch-purple{background:#ede8fb;color:var(--purple);}
-.ch-slate{background:#e4e7ed;color:#445;}
-.card-body{padding:12px 14px;}
-.card-sect{padding:10px 14px;border-bottom:1px solid var(--border);}
-.card-sect:last-child{border-bottom:none;}
-
-.form-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
-.form-row.c3{grid-template-columns:1fr 1fr 1fr;}
-.form-row.c1{grid-template-columns:1fr;}
-.form-row.last{margin-bottom:0;}
-.field{display:flex;flex-direction:column;gap:3px;}
-.field label{font-size:10.5px;color:var(--muted2);font-weight:600;letter-spacing:.3px;display:flex;align-items:center;gap:5px;}
-.field label .hint{color:var(--muted);font-weight:400;}
-.field input,.field select{
-  background:var(--surface);color:var(--txt);border:1px solid var(--border);
-  border-radius:var(--rad-sm);padding:7px 10px;font-size:13px;font-family:var(--font);
-  transition:border-color .15s,box-shadow .15s,background .15s;outline:none;width:100%;
-}
-.field input:hover,.field select:hover{border-color:var(--border2);}
-.field input:focus,.field select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(1,71,140,.10);background:#fff;}
-.field input[readonly]{color:#98a2b3;background:#f9fafb;cursor:default;}
-.field select{cursor:pointer;}
-.field.mono input{font-family:var(--mono);font-size:13px;}
-.field.highlight input{color:var(--blue);font-weight:700;font-family:var(--mono);}
-input[type=number]{appearance:textfield;text-align:right;}
-input[type=number]::-webkit-outer-spin-button,input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;}
-input[type=date]::-webkit-calendar-picker-indicator{filter:invert(0.2);}
-.field input.editable,.field select.editable{border-color:var(--border);}
-.field input.editing,.field select.editing{background:var(--blue-dim);border-color:var(--blue-mid);box-shadow:0 0 0 3px rgba(1,71,140,.10);}
-.field input::placeholder{color:#b0b8c8;}
-.term-unit-sel{font-size:10px!important;padding:2px 6px!important;border-radius:4px!important;border:1px solid var(--border)!important;background:var(--surface3)!important;cursor:pointer;height:auto!important;width:auto!important;font-family:var(--font)!important;color:var(--blue)!important;font-weight:700!important;}
-/* Checkboxes */
-.chk-group{display:flex;flex-direction:column;gap:5px;margin-top:4px;}
-.chk-row{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--txt);cursor:pointer;user-select:none;padding:4px 8px;border-radius:var(--rad-sm);background:var(--surface3);border:1px solid var(--border);transition:background .1s;}
-.chk-row:hover{background:var(--blue-dim);}
-.chk-row input[type=checkbox]{width:14px;height:14px;accent-color:var(--blue);cursor:pointer;flex-shrink:0;}
-.divider{height:1px;background:var(--border);margin:10px 0;}
-.sect-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px dashed var(--border2);}
-.pmt-hero{background:linear-gradient(140deg,#0a3a72 0%,#01478c 60%,#0268b8 100%);border-radius:var(--rad);padding:18px 16px;text-align:center;margin-bottom:10px;box-shadow:0 4px 16px rgba(1,71,140,.22);}
-.pmt-hero .label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:rgba(255,255,255,.6);margin-bottom:4px;font-weight:600;}
-.pmt-hero .value{font-family:var(--mono);font-size:34px;font-weight:500;color:#fff;letter-spacing:-1px;line-height:1;}
-.pmt-hero .sub{font-size:11px;color:rgba(255,255,255,.5);margin-top:5px;}
-.result-grid{display:flex;flex-direction:column;gap:3px;}
-.result-row{display:flex;justify-content:space-between;align-items:center;padding:6px 10px;border-radius:var(--rad-sm);background:var(--surface3);transition:background .1s;}
-.result-row:hover{background:var(--blue-dim);}
-.result-row .rl{font-size:11px;color:var(--muted2);}
-.result-row .rv{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--txt);}
-.result-row.key{background:var(--blue-dim);}
-.result-row.key .rl{color:var(--blue);font-weight:700;}
-.result-row.key .rv{color:var(--blue);font-weight:700;font-size:15px;}
-.result-row.sep{background:none;padding:3px 10px 1px;}
-.result-row.sep .rl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);border-top:1px dashed var(--border2);padding-top:4px;width:100%;}
-.ws-table{width:100%;border-collapse:collapse;}
-.ws-table th{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);padding:5px 10px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface2);}
-.ws-table td{padding:7px 10px;font-size:12.5px;font-family:var(--mono);font-weight:500;border-bottom:1px solid var(--border);}
-.ws-table tr:last-child td{border-bottom:none;}
-.ws-table td:not(:first-child){text-align:right;}
-.goal-seek-section{background:linear-gradient(135deg,#fffbf0,#fff8e6);border:1px solid #f0d898;border-radius:var(--rad-sm);padding:12px;}
-.gs-header{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.gs-header .gs-icon{width:26px;height:26px;background:var(--amber);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
-.gs-header .gs-title{font-size:11.5px;font-weight:700;color:#7a4e00;}
-.gs-header .gs-sub{font-size:10px;color:#a06820;margin-top:1px;}
-.gs-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:flex-end;}
-/* Contract conditions box */
-.contract-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--rad-sm);padding:12px;margin-top:10px;}
-.contract-box .cb-title{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;}
-button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;border:none;border-radius:var(--rad-sm);padding:9px 16px;transition:all .15s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}
-.btn-primary{background:var(--green);color:#fff;box-shadow:0 1px 3px rgba(34,163,125,.3);}
-.btn-primary:hover{background:#1a8f6c;}
-.btn-blue{background:var(--blue);color:#fff;}
-.btn-blue:hover{background:#003a78;}
-.btn-amber{background:var(--amber);color:#3d2600;}
-.btn-amber:hover{background:#d0900e;}
-.btn-ghost{background:#fff;color:var(--muted2);border:1px solid var(--border);}
-.btn-ghost:hover{color:var(--txt);border-color:var(--border2);background:var(--surface3);}
-.btn-danger{background:var(--red);color:#fff;}
-.btn-danger:hover{background:#a50016;}
-.btn-sm{padding:6px 12px;font-size:12px;}
-.kbd-hint{display:inline-flex;align-items:center;gap:4px;font-size:10px;color:var(--muted);margin-top:7px;}
-.kbd{background:var(--surface3);border:1px solid var(--border2);border-radius:3px;padding:1px 5px;font-family:var(--mono);font-size:10px;color:var(--muted2);}
-#policyWarnings{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap;}
-.pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
-.pill.warn{background:var(--amber-dim);color:#8a5000;border:1px solid #f0d090;}
-.pill.err{background:var(--red-dim);color:#8c0018;border:1px solid #f0b0b8;}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(16px);font-family:var(--font);font-size:13px;padding:10px 18px 10px 14px;border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.18);pointer-events:none;opacity:0;transition:all .25s cubic-bezier(.34,1.3,.64,1);z-index:9999;max-width:92vw;text-align:center;display:flex;align-items:center;gap:8px;}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-#toast.success{background:#0d3d22;color:#7eeabc;border:1px solid rgba(110,220,166,.3);}
-#toast.error{background:#3a0810;color:#f7a0aa;border:1px solid rgba(220,60,80,.3);}
-
-/* ===== QUOTATION — A4 PAGE LAYOUT ===== */
-
-/* Outer wrapper: grey "desk" background to frame the paper */
-.quote-section-outer{
-  margin-top:28px;
-  background:#c8cbd2;
-  border-radius:6px;
-  padding:28px 20px 32px;
-}
-
-/* Controls bar above the paper */
-.quote-controls{
-  display:flex;align-items:center;gap:10px;
-  padding:8px 12px 14px;
-  font-size:12px;color:var(--muted2);
-}
-.quote-controls label{font-weight:600;}
-.quote-controls select{padding:4px 8px;border:1px solid var(--border);border-radius:var(--rad-sm);font-size:12px;font-family:var(--font);background:#fff;cursor:pointer;}
-.quote-controls .spacer{flex:1;}
-
-/* The "paper" itself — A4 proportions on screen */
-.quote-wrap{
-  background:#fff;
-  border:1px solid #b0b4bc;
-  border-radius:2px;
-  overflow:hidden;
-  box-shadow:
-    0 1px 2px rgba(0,0,0,.08),
-    0 4px 12px rgba(0,0,0,.12),
-    0 12px 32px rgba(0,0,0,.10),
-    0 24px 56px rgba(0,0,0,.07);
-  font-family:Calibri,Arial,sans-serif;
-  width:100%;
-  max-width:794px;
-  margin:0 auto;
-  aspect-ratio:210/297;
-  position:relative;
-}
-
-/* Inner page content — flex column, fills 100% height of paper */
-.q-page{
-  width:100%;
-  height:100%;
-  position:absolute;
-  top:0;left:0;
-  /* margins: 22mm top, 20mm sides, 18mm bottom — comfortable A4 margins */
-  padding:2.8% 3.2% 2.4%;
-  background:#fff;
-  font-size:11.5px;
-  color:#111;
-  line-height:1.65;
-  font-family:Calibri,Arial,sans-serif;
-  display:flex;
-  flex-direction:column;
-}
-
-/* Body grows to fill remaining height */
-.q-body{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  min-height:0;
-}
-
-/* Flex spacers — distribute blank space evenly between content blocks */
-.q-sp{flex:1;min-height:0;}          /* small spacer (between most blocks) */
-.q-sp-lg{flex:2;min-height:0;}       /* larger spacer (above signature) */
-
-/* ── Header ── */
-.q-hdr{
-  display:grid;grid-template-columns:98px 1fr auto;
-  align-items:flex-start;
-  padding-bottom:7px;
-  border-bottom:2px solid #111;
-}
-.q-hdr-logo img{height:60px;width:auto;display:block;}
-.q-hdr-company{padding-left:12px;}
-.q-co-name{font-size:15px;font-weight:700;color:#111;line-height:1.2;margin-bottom:4px;}
-.q-addr-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;font-size:9.5px;color:#333;line-height:1.6;}
-.q-addr-title{font-weight:700;color:#111;font-size:9.5px;}
-.q-hdr-right{text-align:right;min-width:140px;}
-.q-doctype{font-size:30px;font-weight:700;color:#111;letter-spacing:1px;line-height:1;}
-.q-docsub{font-size:13px;font-weight:600;color:#444;text-align:right;margin-top:3px;}
-
-/* ── Info row ── */
-.q-inforow{
-  display:grid;grid-template-columns:1fr 1fr 1fr;
-  padding:8px 0 7px;
-  border-bottom:1px solid #ccc;
-  font-size:10.5px;
-}
-.q-infocell{display:flex;gap:4px;align-items:baseline;}
-.q-infocell .qi-label{color:#444;white-space:nowrap;}
-.q-infocell .qi-val{font-weight:700;color:#111;}
-.q-docinfo{font-size:10px;color:#333;line-height:1.8;}
-.q-docinfo .di-row{display:flex;gap:4px;}
-.q-docinfo .di-k{min-width:118px;color:#444;}
-.q-docinfo .di-v{font-weight:600;color:#111;}
-
-.q-intro{font-size:10.5px;color:#333;line-height:1.6;}
-.q-baht-label{text-align:right;font-size:9.5px;color:#555;margin-bottom:3px;}
-
-/* ── Main table ── */
-.q-tbl{
-  width:100%;border-collapse:collapse;
-  border:1px solid #999;
-  font-size:10px;
-}
-.q-tbl thead th{
-  background:#e6ecf4;border:1px solid #999;
-  padding:7px 4px;font-weight:700;text-align:center;vertical-align:middle;
-  font-size:9.5px;line-height:1.4;color:#111;
-}
-.q-tbl tbody td{
-  border:1px solid #ccc;
-  padding:9px 4px;
-  vertical-align:middle;font-size:10.5px;color:#111;
-}
-.q-tbl td.num{text-align:right;font-family:Calibri,Consolas,monospace;font-size:10px;}
-.q-tbl td.ctr{text-align:center;}
-
-/* ── Rate box ── */
-.q-ratebox{border:1px solid #999;}
-.q-ratebox table{width:100%;border-collapse:collapse;font-size:10px;}
-.q-ratebox table td{padding:6px 10px;vertical-align:middle;}
-.rb-key{color:#333;white-space:nowrap;width:122px;}
-.rb-sep{width:10px;text-align:center;color:#555;}
-.rb-val{color:#111;}
-.rb-gap{width:18px;}
-
-.q-subject{font-size:10.5px;font-weight:700;color:#111;}
-.q-terms-hdr{font-size:10.5px;font-weight:700;text-decoration:underline;color:#111;margin-bottom:4px;}
-.q-terms ol{padding-left:15px;font-size:10.5px;color:#222;line-height:1.7;}
-.q-terms li{margin-bottom:7px;}
-.q-terms ul{padding-left:15px;margin-top:4px;}
-.q-terms ul li{margin-bottom:3px;}
-
-/* ── Signature — bottom of page ── */
-.q-sign{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:32px;
-  border-top:1px solid #ddd;
-  padding-top:7px;
-}
-.q-sign-col{display:flex;flex-direction:column;min-height:90px;}
-.q-sign-intro{font-size:10px;color:#333;line-height:1.75;white-space:pre-line;text-align:center;margin-bottom:0;}
-.q-sign-spacer{flex:1;min-height:48px;}
-.q-sign-line{border-top:1px solid #444;width:100%;margin-bottom:4px;}
-.q-sign-name-block{text-align:center;}
-.q-sign-name{font-size:11px;font-weight:700;color:#111;}
-.q-sign-role{font-size:9.5px;color:#555;}
-.q-sign-row{font-size:10px;color:#333;display:flex;gap:8px;align-items:baseline;margin-top:3px;}
-.q-sign-row .sk{min-width:62px;color:#444;}
-.q-sign-row .sv{font-weight:700;color:#111;}
-
-/* ── PRINT ── */
-@media print{
-  @page{size:A4 portrait;margin:10mm 12mm;}
-  .no-print,#toast,.quote-controls,.page-header,.grid-main,.btn-row,
-  .quote-section-outer > .no-print{display:none!important;}
-  html,body{background:#fff!important;font-family:Calibri,Arial,sans-serif!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-  .app{padding:0!important;margin:0!important;max-width:100%!important;}
-  .quote-section-outer{background:#fff!important;padding:0!important;margin:0!important;}
-  .quote-wrap{
-    border:none!important;box-shadow:none!important;border-radius:0!important;
-    max-width:100%!important;width:100%!important;
-    aspect-ratio:unset!important;
-    position:static!important;
-  }
-  .q-page{
-    position:static!important;
-    height:auto!important;
-    min-height:calc(297mm - 20mm)!important;
-    padding:0!important;
-    font-size:8.5pt!important;
-  }
-  .q-hdr-logo img{height:46px!important;}
-  .q-co-name{font-size:11pt!important;}
-  .q-doctype{font-size:20pt!important;}
-  .q-addr-cols,.q-inforow{font-size:7.5pt!important;}
-  .q-tbl thead th{font-size:7pt!important;padding:3px 2px!important;}
-  .q-tbl tbody td{font-size:7.5pt!important;padding:5px 3px!important;}
-  .q-ratebox table td{font-size:7.5pt!important;padding:3px 6px!important;}
-  .q-intro{font-size:8pt!important;}
-  .q-terms ol,.q-terms-hdr,.q-subject{font-size:7.5pt!important;}
-  .q-sp,.q-sp-lg{display:none!important;}
-  .q-sign{margin-top:auto!important;border-top:1px solid #ccc!important;}
-  tr,.q-sign{page-break-inside:avoid;}
-}
-</style>
+<link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 <div id="toast"></div>
@@ -336,7 +14,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   <div class="page-header no-print">
     <div class="ph-left">
       <h1>Financial <span>Lease</span> Calculator</h1>
-      <p>Thai ORIX Leasing Co., Ltd. — คำนวณสัญญาเช่าซื้อ / ลิสซิ่ง พร้อมออกใบเสนอราคา</p>
+      <p>Thai ORIX Leasing Co., Ltd. — โปรแกรมคำนวณลิสซิ่ง พร้อมออกใบเสนอราคา</p>
     </div>
     <div class="ph-badge">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -370,7 +48,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
           <div class="field"><label>สี</label><input id="assetColor" placeholder="เช่น ขาว Pearl"/></div>
         </div>
         <div class="form-row last">
-          <div class="field"><label>จำนวน <span class="hint">(คัน)</span></label><input id="assetQty" type="number" min="1" step="1" inputmode="numeric" value=""/></div>
+          <div class="field"><label>จำนวน <span class="hint">(คัน)</span></label><input id="assetQty" type="number" min="0" step="1" inputmode="numeric" value=""/></div>
           <div></div>
         </div>
         </div>
@@ -388,7 +66,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
           <div class="field"><label>VAT <span class="hint">(%)</span></label><input id="vatPct" type="number" min="0" step="0.01" inputmode="decimal" value="7"/></div>
           <div class="field">
             <label>ระยะเวลา <select id="termUnit" class="term-unit-sel"><option value="years" selected>ปี</option><option value="months">เดือน</option></select></label>
-            <input id="termVal" type="number" min="0" step="1" inputmode="decimal" value="5"/>
+            <input id="termVal" type="number" min="0" step="1" inputmode="decimal" value="0"/>
           </div>
         </div>
         </div>
@@ -541,7 +219,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     <!-- Controls bar (hidden on print) -->
     <div class="quote-controls no-print">
       <label>ภาษา / Language</label>
-      <select id="quoteLang"><option value="EN" selected>English</option><option value="TH">ภาษาไทย</option></select>
+      <select id="quoteLang">
+  <option value="TH" selected>ภาษาไทย</option>
+  <option value="EN">English</option>
+</select>
       <div class="spacer"></div>
       <button class="btn-ghost btn-sm" onclick="exportExcel()">📊 Export Excel</button>
       <button class="btn-primary btn-sm" onclick="window.print()">🖨 Print</button>
@@ -713,6 +394,41 @@ and have read and accepted all terms and conditions in this document.</div>
           </div>
           <!-- /SIGNATURE -->
 
+          <!-- ── FOOTER with QR Code ── -->
+<div class="q-footer">
+
+  <div class="q-footer-qr">
+    <div class="q-footer-qrbox">
+      <img
+        src="qr-code.png"
+        alt="QR Code"
+        class="q-footer-qr-image"
+      >
+    </div>
+  </div>
+
+  <div class="q-footer-text" id="q_footer_text">
+    <div id="q_footer_content_en" class="q-footer-content">
+      I have been fully informed essential details and conditions of the agreement, the impacts, service fees (if any), possible expense, and possible interest obligations not yet due and payable under the agreement that may arise, including the information in the sales sheet via this QR code or this LINK:
+      <a href="https://www.orix.co.th/th/sales-sheet" target="_blank" rel="noopener">
+        https://www.orix.co.th/th/sales-sheet
+      </a>
+    </div>
+
+    <div id="q_footer_content_th" class="q-footer-content hidden">
+      ข้าพเจ้าได้ทราบถึงสาระสำคัญและเงื่อนไขของสัญญา ผลกระทบ ค่าบริการ (ถ้ามี) ค่าใช้จ่ายที่อาจเกิดขึ้น และภาระดอกเบี้ยที่ยังไม่ถึงกำหนดชำระตามสัญญาที่อาจเกิดขึ้น รวมถึงข้อมูลในเอกสารผลิตภัณฑ์ตามคิวอาร์โค้ดนี้หรือลิงก์นี้
+      <a href="https://www.orix.co.th/th/sales-sheet" target="_blank" rel="noopener">
+        https://www.orix.co.th/th/sales-sheet
+      </a>
+      ครบถ้วนแล้ว
+    </div>
+  </div>
+
+  <div class="q-footer-pagenum" id="q_pagenum">Page 1/1</div>
+
+</div>
+<!-- /FOOTER -->
+
         </div><!-- /q-body -->
       </div><!-- /q-page -->
     </div><!-- /quote-wrap -->
@@ -737,8 +453,8 @@ const DEFAULT_VALUES = {
   paymentMethod:'transfer',
   custName:'Test',fromName:'Jakkrawut  Naksomphan',
   quotationNo:'',issueDate:'',validDays:30,
-  assetName:'',assetColor:'',assetQty:1,
-  targetMonthlyInc:'',quoteLang:'EN'
+  assetName:'',assetColor:'',assetQty:'',
+  targetMonthlyInc:'',quoteLang:'TH'
 };
 
 const $ = id => document.getElementById(id);
@@ -882,8 +598,26 @@ function applyQuoteLang(lang){
   setText('q_sign_confirm',TH?'การลงนามในเอกสารฉบับนี้ถือว่าผู้เช่าได้ยืนยันการสั่งซื้อ\nและยอมรับเงื่อนไขทั้งหมดที่ระบุไว้แล้ว':'By signing this document, you have confirmed your order,\nand have read and accepted all terms and conditions in this document.');
   setText('lbl_customer',TH?'ลูกค้า':'Customer');
   setText('lbl_date',TH?'วันที่':'Date');
-}
+  
+ // Toggle footer content based on language
+const footerEN = $('q_footer_content_en');
+const footerTH = $('q_footer_content_th');
 
+if(footerEN && footerTH){
+
+  // reset inline display ก่อน
+  footerEN.style.display = '';
+  footerTH.style.display = '';
+
+  if(TH){
+    footerEN.classList.add('hidden');
+    footerTH.classList.remove('hidden');
+  }else{
+    footerEN.classList.remove('hidden');
+    footerTH.classList.add('hidden');
+  }
+}
+}
 function recalc(){
   var inp=readInputs();
   var vatPct=inp.vatPct,years=inp.years,months=inp.months,flatRate=inp.flatRate,net=inp.net;
@@ -931,15 +665,26 @@ function recalc(){
   var quotationNo=getVal('quotationNo'),issueDate=getVal('issueDate');
   var validDays=Math.max(0,getVal('validDays'));
   var assetName=getVal('assetName'),assetColor=getVal('assetColor');
-  var assetQty=Math.max(1,getVal('assetQty'));
-  // date is optional — show blank if not filled in
+  var assetName = getVal('assetName');
+var assetColor = getVal('assetColor')
+/*
+  ต้องอ่านค่า assetQty แบบ raw
+  เพราะ getVal('assetQty') จะเปลี่ยนค่าว่างเป็น 0
+*/
+var assetQtyRaw = $('assetQty')
+  ? String($('assetQty').value || '').replace(/,/g, '').trim()
+  : '';
+
+var assetQty = assetQtyRaw === ''
+  ? ''
+  : Math.max(0, parseInt(assetQtyRaw, 10) || 0);
   var issueDisp=issueDate?issueDate.split('-').reverse().join('/'):'';
-  var lang=$('quoteLang')?$('quoteLang').value:'EN';
+  var lang=$('quoteLang')?$('quoteLang').value:'TH';
   var TH=lang==='TH';
 
   setText('q_to',custName);setText('q_from',fromName);
   setText('q_no',quotationNo||'');setText('q_issue',issueDisp);
-  setText('q_expire',issueDisp?(validDays+(TH?' วัน หลังจากวันที่เสนอราคา':' days after the issue date')):'');
+  setText('q_expire',issueDisp?(validDays+(TH?' วัน นับจากวันที่เสนอราคา':' days after the issue date')):'');
   var ae=$('q_asset');if(ae)ae.textContent=assetName||'';
   var ce=$('q_color');if(ce)ce.textContent=assetColor||'';
   setText('q_list',fmt2(inp.gross));setText('q_deposit',fmt2(downBaht));
@@ -956,8 +701,8 @@ function recalc(){
   var diffEndInc=hasBalloon?Math.max(0,purchaseOptionInc-downBaht):0;
   if(c1){
     if(TH){
-      if(hasBalloon)c1.innerHTML='ผู้เช่าตกลงชำระเงินดาวน์ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT)<br/>เงินดาวน์เป็นส่วนหนึ่งของราคาสิทธิซื้อ <strong>'+fmtNum(purchaseOptionInc,2)+' บาท</strong> เมื่อสัญญาสิ้นสุด ลูกค้าชำระส่วนต่าง <strong>'+fmtNum(diffEndInc,2)+' บาท</strong>';
-      else if(hasDown)c1.innerHTML='ผู้เช่าตกลงชำระเงินดาวน์ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT) เงินดาวน์จะหักเป็นราคาสิทธิซื้อโดยอัตโนมัติเมื่อสัญญาสิ้นสุด';
+      if(hasBalloon)c1.innerHTML='ผู้เช่าตกลงชำระเงินมัดจำ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT)<br/>เงินมัดจำเป็นส่วนหนึ่งของราคาสิทธิซื้อ <strong>'+fmtNum(purchaseOptionInc,2)+' บาท</strong> เมื่อสัญญาสิ้นสุด ลูกค้าชำระส่วนต่าง <strong>'+fmtNum(diffEndInc,2)+' บาท</strong>';
+      else if(hasDown)c1.innerHTML='ผู้เช่าตกลงชำระเงินมัดจำ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT) เงินมัดจำจะหักเป็นราคาสิทธิซื้อโดยอัตโนมัติเมื่อสัญญาสิ้นสุด';
       else c1.innerHTML='เมื่อสัญญาเช่าครบกำหนด ผู้เช่าต้องชำระราคาสิทธิซื้อ <strong>'+fmtNum(PURCHASE_OPTION_INC,2)+' บาท</strong> (รวม VAT)';
     }else{
       if(hasBalloon)c1.innerHTML='Lessee shall pay <strong>'+fmtNum(downBaht,2)+' Baht</strong> (Inc. VAT) as a deposit.<br/>Deposit is part of the purchase price of <strong>'+fmtNum(purchaseOptionInc,2)+' Baht</strong>. At contract end, customer shall pay the difference: <strong>'+fmtNum(diffEndInc,2)+' Baht</strong> (Inc. VAT).';
@@ -1061,16 +806,684 @@ function goalSeekDown(){
   );
 }
 function resetAll(){
-  Object.entries(DEFAULT_VALUES).forEach(([k,v])=>setVal(k,v));
-  $('guar_none').checked=true;$('guar_personal').checked=false;$('guar_corporate').checked=false;
-  applyQuoteLang('EN');uiToggleMode();toggleBalloonUI();recalc();
+  Object.entries(DEFAULT_VALUES).forEach(([k,v]) => setVal(k,v));
+
+  $('guar_none').checked = true;
+  $('guar_personal').checked = false;
+  $('guar_corporate').checked = false;
+
+  applyQuoteLang(DEFAULT_VALUES.quoteLang || 'TH');
+
+  uiToggleMode();
+  toggleBalloonUI();
+  recalc();
+
+  showToast('✅ รีเซ็ตข้อมูลเรียบร้อย', 'success');
 }
 
-function exportExcel(){
-  var ws=$('ws_table').outerHTML,quote=$('quoteSection').outerHTML;
-  var html='<html><head><meta charset="UTF-8"><style>body{font-family:Calibri,Arial;font-size:11pt}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px}th{background:#eef2f7}</style></head><body><h2>OWS Working Sheet</h2>'+ws+'<h2>Quotation</h2>'+quote+'</body></html>';
-  var dt=new Date(),y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');
-  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([html],{type:'application/vnd.ms-excel'}));a.download='OWS_Quotation_'+y+m+d+'.xls';a.click();URL.revokeObjectURL(a.href);
+async function exportExcel(){
+
+  try{
+
+    if(typeof ExcelJS === 'undefined'){
+      showToast('ไม่พบ ExcelJS library กรุณาเพิ่ม exceljs.min.js ก่อน', 'error');
+      return;
+    }
+
+    recalc();
+
+    const wb = new ExcelJS.Workbook();
+    wb.creator = 'Thai ORIX Leasing';
+    wb.created = new Date();
+
+    const lang = $('quoteLang') ? $('quoteLang').value : 'TH';
+    const isTH = lang === 'TH';
+
+    const getText = id => {
+      const el = $(id);
+      return el ? (el.innerText || el.textContent || '').trim() : '';
+    };
+
+    const getCleanText = id => {
+      const el = $(id);
+      return el
+        ? (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim()
+        : '';
+    };
+
+    const moneyText = id => getText(id) || '-';
+
+    const thinBorder = {
+      top: { style:'thin', color:{ argb:'FF999999' } },
+      left: { style:'thin', color:{ argb:'FF999999' } },
+      bottom: { style:'thin', color:{ argb:'FF999999' } },
+      right: { style:'thin', color:{ argb:'FF999999' } }
+    };
+
+    const softBorder = {
+      top: { style:'thin', color:{ argb:'FFDDDDDD' } },
+      left: { style:'thin', color:{ argb:'FFDDDDDD' } },
+      bottom: { style:'thin', color:{ argb:'FFDDDDDD' } },
+      right: { style:'thin', color:{ argb:'FFDDDDDD' } }
+    };
+
+    function styleCell(cell, opt = {}){
+
+      cell.font = {
+        name: 'Calibri',
+        size: opt.size || 10,
+        bold: !!opt.bold,
+        color: { argb: opt.color || 'FF111111' }
+      };
+
+      cell.alignment = opt.alignment || {
+        vertical: 'middle',
+        horizontal: opt.horizontal || 'left',
+        wrapText: true
+      };
+
+      if(opt.fill){
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: opt.fill }
+        };
+      }
+
+      if(opt.border){
+        cell.border = opt.border;
+      }
+    }
+
+    async function addImageIfExists(ws, src, range, ext = 'png'){
+      try{
+        const res = await fetch(src);
+        if(!res.ok) return;
+
+        const buffer = await res.arrayBuffer();
+
+        const imageId = wb.addImage({
+          buffer,
+          extension: ext
+        });
+
+        ws.addImage(imageId, range);
+      }catch(err){
+        console.warn('Cannot add image:', src, err);
+      }
+    }
+
+    /* =====================================================
+       SHEET 1: QUOTATION
+       ===================================================== */
+
+    const qs = wb.addWorksheet('Quotation', {
+      pageSetup: {
+        paperSize: 9,
+        orientation: 'portrait',
+        fitToPage: true,
+        fitToWidth: 1,
+        fitToHeight: 1,
+        margins: {
+          left: 0.25,
+          right: 0.25,
+          top: 0.25,
+          bottom: 0.25,
+          header: 0,
+          footer: 0
+        }
+      },
+      views: [
+        {
+          showGridLines: false
+        }
+      ]
+    });
+
+    qs.properties.defaultRowHeight = 18;
+
+    qs.columns = [
+      { width: 5 },
+      { width: 20 },
+      { width: 13 },
+      { width: 13 },
+      { width: 8 },
+      { width: 13 },
+      { width: 9 },
+      { width: 13 },
+      { width: 13 },
+      { width: 6 },
+      { width: 10 }
+    ];
+
+    /*
+      Header
+    */
+    qs.mergeCells('A1:B4');
+    qs.mergeCells('C1:H4');
+    qs.mergeCells('I1:K2');
+    qs.mergeCells('I3:K4');
+
+    qs.getCell('C1').value =
+      `${getText('q_co_name')}\n` +
+      `${getText('q_hd_title')}: ${getText('q_hd_a1')} ${getText('q_hd_a2')} ${getText('q_hd_tel')}\n` +
+      `${getText('q_eb_title')}: ${getText('q_eb_a1')} ${getText('q_eb_a2')} ${getText('q_eb_tel')}`;
+
+    styleCell(qs.getCell('C1'), {
+      size: 9,
+      bold: true,
+      alignment: {
+        vertical: 'top',
+        horizontal: 'left',
+        wrapText: true
+      }
+    });
+
+    qs.getCell('I1').value = getText('q_doctype') || 'QUOTATION';
+
+    styleCell(qs.getCell('I1'), {
+      size: 22,
+      bold: true,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'right',
+        wrapText: true
+      }
+    });
+
+    qs.getCell('I3').value = getText('q_docsub') || 'Leasing';
+
+    styleCell(qs.getCell('I3'), {
+      size: 12,
+      bold: true,
+      color: 'FF444444',
+      alignment: {
+        vertical: 'top',
+        horizontal: 'right',
+        wrapText: true
+      }
+    });
+
+    qs.getRow(1).height = 24;
+    qs.getRow(2).height = 24;
+    qs.getRow(3).height = 20;
+    qs.getRow(4).height = 20;
+
+    await addImageIfExists(qs, 'orix_logo.png', {
+      tl: { col: 0.1, row: 0.4 },
+      ext: { width: 110, height: 55 }
+    });
+
+    /*
+      Info row
+    */
+    qs.mergeCells('A6:C6');
+    qs.mergeCells('D6:F6');
+    qs.mergeCells('G6:K8');
+
+    qs.getCell('A6').value = `${getText('lbl_qi_to')} ${getText('q_to')}`;
+    qs.getCell('D6').value = `${getText('lbl_qi_from')} ${getText('q_from')}`;
+
+    qs.getCell('G6').value =
+      `${getText('lbl_qi_qno')} ${getText('q_no')}\n` +
+      `${getText('lbl_qi_issue')} ${getText('q_issue')}\n` +
+      `${getText('lbl_qi_exp')} ${getText('q_expire')}`;
+
+    ['A6', 'D6', 'G6'].forEach(addr => {
+      styleCell(qs.getCell(addr), {
+        size: 10,
+        bold: true,
+        border: softBorder,
+        alignment: {
+          vertical: 'middle',
+          horizontal: 'left',
+          wrapText: true
+        }
+      });
+    });
+
+    qs.getRow(6).height = 22;
+    qs.getRow(7).height = 18;
+    qs.getRow(8).height = 18;
+
+    /*
+      Intro
+    */
+    qs.mergeCells('A10:K10');
+    qs.getCell('A10').value = getText('q_intro');
+
+    styleCell(qs.getCell('A10'), {
+      size: 10,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'left',
+        wrapText: true
+      }
+    });
+
+    qs.mergeCells('J11:K11');
+    qs.getCell('J11').value = '(Baht)';
+
+    styleCell(qs.getCell('J11'), {
+      size: 9,
+      color: 'FF555555',
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'right',
+        wrapText: true
+      }
+    });
+
+    /*
+      Main quotation table
+    */
+    const headerRow = 12;
+    const dataRow = 13;
+
+    const headers = [
+      getText('col_no'),
+      getText('col_asset'),
+      getCleanText('col_list'),
+      getCleanText('col_dep'),
+      getCleanText('col_term'),
+      getCleanText('col_pmt_ex'),
+      getText('col_vat'),
+      getCleanText('col_pmt_inc'),
+      getCleanText('col_purchase'),
+      getText('col_qty'),
+      getText('col_color')
+    ];
+
+    qs.getRow(headerRow).values = headers;
+
+    qs.getRow(dataRow).values = [
+      '1',
+      getText('q_asset'),
+      moneyText('q_list'),
+      moneyText('q_deposit'),
+      getText('q_term'),
+      moneyText('q_pmt_ex'),
+      moneyText('q_vat'),
+      moneyText('q_pmt_inc'),
+      moneyText('q_purchase'),
+      getText('q_qty'),
+      getText('q_color')
+    ];
+
+    for(let c = 1; c <= 11; c++){
+
+      const h = qs.getCell(headerRow, c);
+
+      styleCell(h, {
+        size: 9,
+        bold: true,
+        fill: 'FFE6ECF4',
+        border: thinBorder,
+        alignment: {
+          vertical: 'middle',
+          horizontal: 'center',
+          wrapText: true
+        }
+      });
+
+      const d = qs.getCell(dataRow, c);
+
+      styleCell(d, {
+        size: 10,
+        border: thinBorder,
+        alignment: {
+          vertical: 'middle',
+          horizontal: c === 2 || c === 11 ? 'left' : 'center',
+          wrapText: true
+        }
+      });
+    }
+
+    [3, 4, 6, 7, 8, 9].forEach(c => {
+      qs.getCell(dataRow, c).alignment = {
+        vertical: 'middle',
+        horizontal: 'right',
+        wrapText: true
+      };
+    });
+
+    qs.getRow(headerRow).height = 42;
+    qs.getRow(dataRow).height = 38;
+
+    /*
+      Rate box
+    */
+    const rbStart = 16;
+
+    qs.mergeCells(`A${rbStart}:K${rbStart + 2}`);
+
+    qs.getCell(`A${rbStart}`).value =
+      `${getText('rb_k1')} : ${getText('rb_v1')}        ${getText('rb_k4')} : ${getText('rb_v4')}\n` +
+      `${getText('rb_k2')} : ${getText('rb_v2')}        ${getText('rb_k5')} : ${getText('rb_v5')}\n` +
+      `${getText('rb_k3')} : ${getText('rb_v3')}`;
+
+    styleCell(qs.getCell(`A${rbStart}`), {
+      size: 10,
+      border: thinBorder,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'left',
+        wrapText: true
+      }
+    });
+
+    qs.getRow(rbStart).height = 22;
+    qs.getRow(rbStart + 1).height = 22;
+    qs.getRow(rbStart + 2).height = 22;
+
+    /*
+      Subject / Terms
+    */
+    qs.mergeCells('A20:K20');
+    qs.getCell('A20').value = getText('q_subject');
+
+    styleCell(qs.getCell('A20'), {
+      size: 10,
+      bold: true
+    });
+
+    qs.mergeCells('A22:K22');
+    qs.getCell('A22').value = getText('h_terms');
+
+    styleCell(qs.getCell('A22'), {
+      size: 10,
+      bold: true
+    });
+
+    qs.mergeCells('A23:K24');
+    qs.getCell('A23').value = getText('ol_terms_en');
+
+    styleCell(qs.getCell('A23'), {
+      size: 9.5,
+      alignment: {
+        vertical: 'top',
+        horizontal: 'left',
+        wrapText: true
+      }
+    });
+
+    qs.mergeCells('A26:K26');
+    qs.getCell('A26').value = getText('h_details');
+
+    styleCell(qs.getCell('A26'), {
+      size: 10,
+      bold: true
+    });
+
+    qs.mergeCells('A27:K32');
+
+    qs.getCell('A27').value =
+      `${getText('cond1_title')}\n` +
+      `${getText('condition1')}\n\n` +
+      `${getText('q_clause2')}\n\n` +
+      `${getText('condition2')}\n\n` +
+      `${getText('q_clause3')}`;
+
+    styleCell(qs.getCell('A27'), {
+      size: 9.5,
+      alignment: {
+        vertical: 'top',
+        horizontal: 'left',
+        wrapText: true
+      }
+    });
+
+    for(let r = 27; r <= 32; r++){
+      qs.getRow(r).height = 22;
+    }
+
+    /*
+      Signature
+    */
+    const sigTop = 36;
+
+    qs.mergeCells(`A${sigTop}:E${sigTop}`);
+    qs.mergeCells(`G${sigTop}:K${sigTop}`);
+
+    qs.getCell(`A${sigTop}`).value = getText('lbl_authsig');
+    qs.getCell(`G${sigTop}`).value = getText('q_sign_confirm');
+
+    styleCell(qs.getCell(`A${sigTop}`), {
+      size: 9.5,
+      bold: true,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'center',
+        wrapText: true
+      }
+    });
+
+    styleCell(qs.getCell(`G${sigTop}`), {
+      size: 9.5,
+      bold: true,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'center',
+        wrapText: true
+      }
+    });
+
+    qs.getRow(sigTop).height = 36;
+    qs.getRow(sigTop + 1).height = 20;
+    qs.getRow(sigTop + 2).height = 20;
+    qs.getRow(sigTop + 3).height = 8;
+
+    qs.mergeCells(`A${sigTop + 3}:E${sigTop + 3}`);
+    qs.mergeCells(`G${sigTop + 3}:K${sigTop + 3}`);
+
+    qs.getCell(`A${sigTop + 3}`).border = {
+      top: { style:'thin', color:{ argb:'FF000000' } }
+    };
+
+    qs.getCell(`G${sigTop + 3}`).border = {
+      top: { style:'thin', color:{ argb:'FF000000' } }
+    };
+
+    qs.mergeCells(`A${sigTop + 4}:E${sigTop + 4}`);
+    qs.getCell(`A${sigTop + 4}`).value = getText('q_sign_name');
+
+    styleCell(qs.getCell(`A${sigTop + 4}`), {
+      size: 10.5,
+      bold: true,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'center'
+      }
+    });
+
+    qs.mergeCells(`A${sigTop + 5}:E${sigTop + 5}`);
+    qs.getCell(`A${sigTop + 5}`).value = getText('q_sign_role');
+
+    styleCell(qs.getCell(`A${sigTop + 5}`), {
+      size: 9,
+      color: 'FF333333',
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'center'
+      }
+    });
+
+    qs.mergeCells(`G${sigTop + 4}:K${sigTop + 4}`);
+    qs.getCell(`G${sigTop + 4}`).value = `${getText('lbl_customer')} ${getText('q_cust_sign')}`;
+
+    styleCell(qs.getCell(`G${sigTop + 4}`), {
+      size: 9.5,
+      bold: true
+    });
+
+    qs.mergeCells(`G${sigTop + 5}:K${sigTop + 5}`);
+    qs.getCell(`G${sigTop + 5}`).value = getText('lbl_date');
+
+    styleCell(qs.getCell(`G${sigTop + 5}`), {
+      size: 9.5
+    });
+
+    /*
+      Footer
+    */
+    const ft = 44;
+
+    qs.mergeCells(`A${ft}:B${ft + 4}`);
+    qs.mergeCells(`C${ft}:I${ft + 4}`);
+    qs.mergeCells(`J${ft}:K${ft + 4}`);
+
+    const getRawText = id => {
+  const el = $(id);
+  return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '';
+};
+
+const footerText = isTH
+  ? getRawText('q_footer_content_th')
+  : getRawText('q_footer_content_en');
+
+    qs.getCell(`C${ft}`).value = footerText;
+
+    styleCell(qs.getCell(`C${ft}`), {
+      size: 8.5,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'left',
+        wrapText: true
+      }
+    });
+
+    qs.getCell(`J${ft}`).value = getText('q_pagenum') || 'Page 1/1';
+
+    styleCell(qs.getCell(`J${ft}`), {
+      size: 8.5,
+      bold: true,
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'right'
+      }
+    });
+
+    ['A','B','C','D','E','F','G','H','I','J','K'].forEach(col => {
+      qs.getCell(`${col}${ft}`).border = {
+        top: { style:'thin', color:{ argb:'FFDDDDDD' } }
+      };
+    });
+
+    await addImageIfExists(qs, 'qr-code.png', {
+      tl: { col: 0.2, row: ft - 1 + 0.2 },
+      ext: { width: 72, height: 72 }
+    });
+
+    for(let r = ft; r <= ft + 4; r++){
+      qs.getRow(r).height = 18;
+    }
+
+    qs.pageSetup.printArea = `A1:K${ft + 4}`;
+
+    /* =====================================================
+       SHEET 2: OWS WORKING SHEET
+       ===================================================== */
+
+    const os = wb.addWorksheet('OWS Working Sheet', {
+      views: [
+        {
+          showGridLines: false
+        }
+      ]
+    });
+
+    os.columns = [
+      { width: 30 },
+      { width: 18 },
+      { width: 18 }
+    ];
+
+    os.mergeCells('A1:C1');
+    os.getCell('A1').value = 'OWS Working Sheet';
+
+    styleCell(os.getCell('A1'), {
+      size: 16,
+      bold: true,
+      fill: 'FF01478C',
+      color: 'FFFFFFFF',
+      alignment: {
+        vertical: 'middle',
+        horizontal: 'center'
+      }
+    });
+
+    os.getRow(1).height = 28;
+
+    const wsTable = $('ws_table');
+    const rows = wsTable ? Array.from(wsTable.querySelectorAll('tr')) : [];
+
+    rows.forEach((tr, idx) => {
+      const excelRow = idx + 3;
+      const cells = Array.from(tr.querySelectorAll('th,td'));
+
+      cells.forEach((cell, cidx) => {
+        const excelCell = os.getCell(excelRow, cidx + 1);
+        excelCell.value = (cell.innerText || cell.textContent || '').trim();
+
+        styleCell(excelCell, {
+          size: idx === 0 ? 10 : 11,
+          bold: idx === 0,
+          fill: idx === 0 ? 'FFE6ECF4' : null,
+          border: thinBorder,
+          alignment: {
+            vertical: 'middle',
+            horizontal: cidx === 0 ? 'left' : 'right',
+            wrapText: true
+          }
+        });
+      });
+
+      os.getRow(excelRow).height = idx === 0 ? 22 : 20;
+    });
+
+    os.pageSetup = {
+      paperSize: 9,
+      orientation: 'portrait',
+      fitToPage: true,
+      fitToWidth: 1,
+      fitToHeight: 1,
+      margins: {
+        left: 0.3,
+        right: 0.3,
+        top: 0.4,
+        bottom: 0.4,
+        header: 0,
+        footer: 0
+      }
+    };
+
+    /*
+      Export
+    */
+    const dt = new Date();
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, '0');
+    const d = String(dt.getDate()).padStart(2, '0');
+
+    const buffer = await wb.xlsx.writeBuffer();
+
+    const blob = new Blob([buffer], {
+      type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `OWS_Quotation_${y}${m}${d}.xlsx`;
+    a.click();
+
+    URL.revokeObjectURL(a.href);
+
+    showToast('✅ Export Excel สำเร็จ', 'success');
+
+  }catch(error){
+    console.error(error);
+    showToast('❌ Export failed: ' + error.message, 'error');
+  }
 }
 
 function formatWithComma(str){
@@ -1108,26 +1521,228 @@ function setupNumericFormatting(){
   });
 }
 
-document.addEventListener('change',e=>{
-  if(e.target.id==='termUnit'){var nu=e.target.value;onTermUnitChange(_prevTermUnit,nu);_prevTermUnit=nu;recalc();}
+/* =====================================================
+   AUTO CALCULATE EVENT BINDING — FIXED + RESET DROPDOWN
+   ===================================================== */
+
+let _recalcTimer = null;
+
+function scheduleRecalc(){
+  clearTimeout(_recalcTimer);
+  _recalcTimer = setTimeout(() => {
+    recalc();
+  }, 0);
+}
+
+
+/*
+  Reset ค่า input ที่เกี่ยวข้อง เมื่อมีการเปลี่ยน dropdown
+*/
+function resetValueOnDropdownChange(id){
+
+  /*
+    เปลี่ยนประเภทดาวน์:
+    reset ค่าเงินดาวน์เป็น 0
+  */
+  if(id === 'downType'){
+    setVal('downInput', 0);
+    return;
+  }
+
+  /*
+    เปิด/ปิด Balloon:
+    reset ค่า Balloon เป็น 0
+    ถ้าปิด Balloon ให้ประเภทกลับเป็น amount
+  */
+  if(id === 'balloonEnable'){
+    setVal('balloonInput', 0);
+
+    if(getVal('balloonEnable') === 'false'){
+      setVal('balloonType', 'amount');
+    }
+
+    return;
+  }
+
+  /*
+    เปลี่ยนประเภท Balloon:
+    reset ค่า Balloon เป็น 0
+  */
+  if(id === 'balloonType'){
+    setVal('balloonInput', 0);
+    return;
+  }
+
+  /*
+    เปลี่ยนโหมด Flat / IRR:
+    reset Flat Rate เป็น 0
+  */
+  if(id === 'mode'){
+    setVal('flatRate', 0);
+    return;
+  }
+
+  /*
+    เปลี่ยนฐานคอม:
+    reset % คอม และ extra คอม
+  */
+  if(id === 'commBaseChoice'){
+    setVal('commPct', 0);
+    setVal('commExtra', 0);
+    return;
+  }
+}
+
+
+/*
+  Handler กลางสำหรับ input/change
+*/
+function handleAutoCalcEvent(e){
+  const el = e.target;
+  if(!el) return;
+
+  const tag = el.tagName;
+  const id = el.id;
+
+  if(!['INPUT','SELECT','TEXTAREA'].includes(tag)) return;
+
+
+  /*
+    ถ้าเป็น dropdown ให้ reset ค่าเกี่ยวข้องก่อน
+  */
+  if(tag === 'SELECT'){
+    resetValueOnDropdownChange(id);
+  }
+
+
+  /*
+    Term unit:
+    ไม่ reset เป็น 0
+    แต่แปลง ปี <-> เดือน เหมือน logic เดิม
+  */
+  if(id === 'termUnit'){
+    const newUnit = el.value;
+    onTermUnitChange(_prevTermUnit, newUnit);
+    _prevTermUnit = newUnit;
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    Mode:
+    toggle IRR row ก่อนคำนวณ
+  */
+  if(id === 'mode'){
+    uiToggleMode();
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    Balloon:
+    show/hide field ก่อนคำนวณ
+  */
+  if(id === 'balloonEnable'){
+    toggleBalloonUI();
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    Language:
+    เปลี่ยนข้อความก่อนคำนวณ
+    ไม่ reset ค่าเงิน
+  */
+  if(id === 'quoteLang'){
+    applyQuoteLang(el.value);
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    ทุก input/select อื่น ๆ คำนวณใหม่
+  */
+  scheduleRecalc();
+}
+
+
+/*
+  input:
+  ใช้กับช่องที่ user พิมพ์
+*/
+document.addEventListener('input', handleAutoCalcEvent);
+
+
+/*
+  change:
+  สำคัญสำหรับ select, checkbox, date
+*/
+document.addEventListener('change', handleAutoCalcEvent);
+
+
+/*
+  Goal seek shortcut
+*/
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey && e.key === 'Enter'){
+    e.preventDefault();
+    goalSeekDown();
+  }
 });
-document.addEventListener('input',e=>{
-  if(!['INPUT','SELECT'].includes(e.target.tagName))return;
-  if(e.target.id==='termUnit')return;
-  if(e.target.id==='mode')uiToggleMode();
-  if(e.target.id==='balloonEnable')toggleBalloonUI();
-  if(e.target.id==='quoteLang'){applyQuoteLang(e.target.value);recalc();return;}
-  recalc();
-});
-document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();goalSeekDown();}});
-window.addEventListener('DOMContentLoaded',()=>{
-  _prevTermUnit=$('termUnit')?$('termUnit').value:'years';
-  applyQuoteLang('EN');uiToggleMode();toggleBalloonUI();recalc();
+
+
+/*
+  Initial load
+*/
+window.addEventListener('DOMContentLoaded', () => {
+
+  _prevTermUnit = $('termUnit') ? $('termUnit').value : 'years';
+
+  /*
+    ต้อง setup ก่อน recalc
+    เพราะ function นี้เปลี่ยน input[type=number] เป็น text
+    และใส่ data-num="1"
+  */
   setupNumericFormatting();
-  document.addEventListener('wheel',e=>{if(document.activeElement&&document.activeElement.getAttribute('data-num')==='1')document.activeElement.blur();},{passive:false});
-  if($('btnSolveIRR'))$('btnSolveIRR').addEventListener('click',solveFlatFromIRR);
-  if($('btnGoalSeek'))$('btnGoalSeek').addEventListener('click',goalSeekDown);
+
+  applyQuoteLang($('quoteLang') ? $('quoteLang').value : 'TH');
+
+  uiToggleMode();
+  toggleBalloonUI();
+
+  recalc();
+
+  /*
+    Prevent mouse wheel changing numeric-like fields
+  */
+  document.addEventListener('wheel', e => {
+    if(
+      document.activeElement &&
+      document.activeElement.getAttribute('data-num') === '1'
+    ){
+      document.activeElement.blur();
+    }
+  }, { passive:false });
+
+  if($('btnSolveIRR')){
+    $('btnSolveIRR').addEventListener('click', solveFlatFromIRR);
+  }
+
+  if($('btnGoalSeek')){
+    $('btnGoalSeek').addEventListener('click', goalSeekDown);
+  }
 });
 </script>
+  
+./js/vendor/qrcode.min.jsscript>
+<script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+
+<!-- ปิดไว้ก่อน ถ้ายังใช้ inline script อยู่ -->
+<!-- ./js/app.js</script> -->
+
 </body>
 </html>
