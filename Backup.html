@@ -678,8 +678,8 @@ function recalc(){
   var diffEndInc=hasBalloon?Math.max(0,purchaseOptionInc-downBaht):0;
   if(c1){
     if(TH){
-      if(hasBalloon)c1.innerHTML='ผู้เช่าตกลงชำระเงินดาวน์ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT)<br/>เงินดาวน์เป็นส่วนหนึ่งของราคาสิทธิซื้อ <strong>'+fmtNum(purchaseOptionInc,2)+' บาท</strong> เมื่อสัญญาสิ้นสุด ลูกค้าชำระส่วนต่าง <strong>'+fmtNum(diffEndInc,2)+' บาท</strong>';
-      else if(hasDown)c1.innerHTML='ผู้เช่าตกลงชำระเงินดาวน์ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT) เงินดาวน์จะหักเป็นราคาสิทธิซื้อโดยอัตโนมัติเมื่อสัญญาสิ้นสุด';
+      if(hasBalloon)c1.innerHTML='ผู้เช่าตกลงชำระเงินมัดจำ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT)<br/>เงินมัดจำเป็นส่วนหนึ่งของราคาสิทธิซื้อ <strong>'+fmtNum(purchaseOptionInc,2)+' บาท</strong> เมื่อสัญญาสิ้นสุด ลูกค้าชำระส่วนต่าง <strong>'+fmtNum(diffEndInc,2)+' บาท</strong>';
+      else if(hasDown)c1.innerHTML='ผู้เช่าตกลงชำระเงินมัดจำ <strong>'+fmtNum(downBaht,2)+' บาท</strong> (รวม VAT) เงินมัดจำจะหักเป็นราคาสิทธิซื้อโดยอัตโนมัติเมื่อสัญญาสิ้นสุด';
       else c1.innerHTML='เมื่อสัญญาเช่าครบกำหนด ผู้เช่าต้องชำระราคาสิทธิซื้อ <strong>'+fmtNum(PURCHASE_OPTION_INC,2)+' บาท</strong> (รวม VAT)';
     }else{
       if(hasBalloon)c1.innerHTML='Lessee shall pay <strong>'+fmtNum(downBaht,2)+' Baht</strong> (Inc. VAT) as a deposit.<br/>Deposit is part of the purchase price of <strong>'+fmtNum(purchaseOptionInc,2)+' Baht</strong>. At contract end, customer shall pay the difference: <strong>'+fmtNum(diffEndInc,2)+' Baht</strong> (Inc. VAT).';
