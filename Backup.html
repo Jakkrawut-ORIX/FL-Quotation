@@ -545,7 +545,7 @@ function onTermUnitChange(oldUnit,newUnit){
   if($('termVal')._formatted)$('termVal').value=formatWithComma(String(nv));
 }
 
-function applyQuoteLang(lang){
+function apply(lang){
   var TH=lang==='TH';
   setText('q_co_name',TH?'บริษัท ไทยโอริกซ์ลีสซิ่ง จำกัด':'THAI ORIX LEASING CO., LTD.');
   setText('q_doctype',TH?'ใบเสนอราคา':'QUOTATION');
@@ -653,11 +653,11 @@ function recalc(){
   var quotationNo=getVal('quotationNo'),issueDate=getVal('issueDate');
   var validDays=Math.max(0,getVal('validDays'));
   var assetName=getVal('assetName'),assetColor=getVal('assetColor');
-  var assetQty=Math.max(1,getVal('assetQty'));
+  var assetQty=Math.max(0,getVal('assetQty'));
   // date is optional — show blank if not filled in
   var issueDisp=issueDate?issueDate.split('-').reverse().join('/'):'';
-  var lang=$('quoteLang')?$('quoteLang').value:'EN';
-  var TH=lang==='TH';
+  var lang=$('quoteLang')?$('quoteLang').value:'TH';
+  var TH=lang==='EN';
 
   setText('q_to',custName);setText('q_from',fromName);
   setText('q_no',quotationNo||'');setText('q_issue',issueDisp);
