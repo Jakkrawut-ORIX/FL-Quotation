@@ -126,11 +126,28 @@ export class App {
     // 4. Initial calculation
     this.recalculate();
 
-    // 5. Expose public methods to window
-    window.app = this;
+  // 5. Expose public methods to window
+window.app = this;
 
-    console.log('✅ App initialized');
+window.exportExcel = () => this.exportExcel();
+window.resetAll = () => this.resetAll();
+window.printQuotation = () => this.print();
+
+window.onGuarNone = (cb) => {
+  if (this.ui.onGuarNone) {
+    this.ui.onGuarNone(cb);
+  } else {
+    this.recalculate();
   }
+};
+
+window.onGuarCheck = (cb) => {
+  if (this.ui.onGuarCheck) {
+    this.ui.onGuarCheck(cb);
+  } else {
+    this.recalculate();
+  }
+};
 
   /**
    * โหลดค่าไปยัง inputs
