@@ -844,8 +844,8 @@ document.addEventListener('change',e=>{
 document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();goalSeekDown();}});
 window.addEventListener('DOMContentLoaded',()=>{
   _prevTermUnit=$('termUnit')?$('termUnit').value:'years';
-  applyQuoteLang('EN');uiToggleMode();toggleBalloonUI();recalc();
-  setupNumericFormatting();
+   setupNumericFormatting();applyQuoteLang('EN');uiToggleMode();toggleBalloonUI();recalc();
+ 
   document.addEventListener('wheel',e=>{if(document.activeElement&&document.activeElement.getAttribute('data-num')==='1')document.activeElement.blur();},{passive:false});
   if($('btnSolveIRR'))$('btnSolveIRR').addEventListener('click',solveFlatFromIRR);
   if($('btnGoalSeek'))$('btnGoalSeek').addEventListener('click',goalSeekDown);
