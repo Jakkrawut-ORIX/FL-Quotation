@@ -713,7 +713,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   gap:40px;
 
   border-top:1.5px solid #999;
-
   padding-top:6px;
 
   break-inside:avoid;
@@ -726,19 +725,32 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   min-height:95px;
 }
 
+/*
+  ทำให้ข้อความบนลายเซ็นทั้ง 2 ฝั่งสูงเท่ากัน
+  เส้นเซ็นชื่อ PANUTDA และ Customer จะอยู่ระดับเดียวกัน
+*/
 .q-sign-intro{
+  height:34px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
   font-size:9.5px;
   color:#000;
-  line-height:1.65;
+  line-height:1.45;
+
   white-space:pre-line;
   text-align:center;
+
   margin-bottom:4px;
+
   font-weight:600;
 }
 
 .q-sign-spacer{
-  flex:1;
-  min-height:50px;
+  flex:1 1 auto;
+  min-height:46px;
 }
 
 .q-sign-line{
@@ -749,6 +761,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 .q-sign-name-block{
   text-align:center;
+  line-height:1.35;
 }
 
 .q-sign-name{
@@ -910,14 +923,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
    PRINT — MOBILE SAFE / DESKTOP SAFE
    ===================================================== */
 
-/*
-  Print strategy:
-  - Internal document is always true A4: 210mm x 297mm
-  - Printed output uses scale 0.92
-  - This helps prevent page 2 when Chrome / printer defaults to Letter
-  - Mobile print must NOT use viewport-based width:100%
-*/
-
 @page{
   size:210mm 297mm;
   margin:0;
@@ -925,10 +930,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 @media print{
 
-  /*
-    Force print variables.
-    This prevents mobile screen preview scale from leaking into print.
-  */
   :root{
     --quote-paper-w:210mm;
     --quote-paper-h:297mm;
@@ -943,13 +944,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Hard print reset
-
-    Important:
-    Do NOT use width:100% here.
-    Mobile Chrome may calculate 100% from mobile viewport.
-  */
   html,
   body{
     width:210mm !important;
@@ -975,9 +969,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Hide all non-document UI
-  */
   .no-print,
   #toast,
   .quote-controls,
@@ -988,10 +979,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    App wrapper must also be fixed physical A4.
-    Do not let it inherit mobile viewport width.
-  */
   .app{
     width:210mm !important;
     height:297mm !important;
@@ -1009,12 +996,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Printed viewport = final scaled visible area.
-
-    210mm x 0.92 = 193.2mm
-    297mm x 0.92 = 273.24mm
-  */
   .quote-section-outer{
     width:193.2mm !important;
     height:273.24mm !important;
@@ -1025,7 +1006,11 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     min-height:273.24mm !important;
     max-height:273.24mm !important;
 
+    /*
+      เลื่อนทั้งเอกสารลงจากหัวกระดาษจริงเล็กน้อย
+    */
     margin:6mm auto 0 !important;
+
     padding:0 !important;
 
     background:#fff !important;
@@ -1035,13 +1020,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    True A4 canvas inside the print viewport.
-
-    Important:
-    This must be fixed in mm.
-    Do not use width:100%.
-  */
   .quote-wrap{
     width:210mm !important;
     height:297mm !important;
@@ -1072,10 +1050,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Inner document content.
-    Keep same visual proportions as designed.
-  */
   .q-page{
     width:100% !important;
     height:100% !important;
@@ -1103,9 +1077,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Body and spacers
-  */
   .q-body{
     flex:1 1 auto !important;
 
@@ -1127,9 +1098,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Prevent mobile print from resizing images unexpectedly
-  */
   img{
     max-width:none !important;
   }
@@ -1141,9 +1109,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Keep table layout stable
-  */
   .q-tbl{
     width:100% !important;
     border-collapse:collapse !important;
@@ -1158,16 +1123,98 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Keep signature together
+    Signature print layout
   */
   .q-sign{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:40px !important;
+
+    border-top:1.5px solid #999 !important;
+
+    padding-top:6px !important;
+
     page-break-inside:avoid !important;
     break-inside:avoid !important;
   }
 
+  .q-sign-col{
+    display:flex !important;
+    flex-direction:column !important;
+
+    min-height:95px !important;
+  }
+
+  .q-sign-intro{
+    height:34px !important;
+
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
+
+    font-size:9.5px !important;
+    line-height:1.45 !important;
+
+    white-space:pre-line !important;
+    text-align:center !important;
+
+    margin-bottom:4px !important;
+
+    font-weight:600 !important;
+  }
+
+  .q-sign-spacer{
+    flex:1 1 auto !important;
+    min-height:46px !important;
+  }
+
+  .q-sign-line{
+    border-top:1px solid #000 !important;
+    width:100% !important;
+    margin-bottom:4px !important;
+  }
+
+  .q-sign-name-block{
+    text-align:center !important;
+    line-height:1.35 !important;
+  }
+
+  .q-sign-name{
+    font-size:10.5px !important;
+    font-weight:700 !important;
+    color:#000 !important;
+  }
+
+  .q-sign-role{
+    font-size:9px !important;
+    color:#333 !important;
+  }
+
+  .q-sign-row{
+    font-size:9.5px !important;
+    color:#000 !important;
+
+    display:flex !important;
+    gap:8px !important;
+    align-items:baseline !important;
+
+    margin-top:2px !important;
+  }
+
+  .q-sign-row .sk{
+    min-width:62px !important;
+    color:#333 !important;
+    font-weight:600 !important;
+  }
+
+  .q-sign-row .sv{
+    font-weight:700 !important;
+    color:#000 !important;
+  }
+
 
   /*
-    Footer same layout as preview
+    Footer print layout
   */
   .q-footer{
     display:flex !important;
@@ -1286,9 +1333,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Prevent important blocks from splitting
-  */
   table,
   thead,
   tbody,
