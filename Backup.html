@@ -830,25 +830,220 @@ function setupNumericFormatting(){
   });
 }
 
-document.addEventListener('change',e=>{
-  if(e.target.id==='termUnit'){var nu=e.target.value;onTermUnitChange(_prevTermUnit,nu);_prevTermUnit=nu;recalc();}
+/* =====================================================
+   AUTO CALCULATE EVENT BINDING — FIXED + RESET DROPDOWN
+   ===================================================== */
+
+let _recalcTimer = null;
+
+function scheduleRecalc(){
+  clearTimeout(_recalcTimer);
+  _recalcTimer = setTimeout(() => {
+    recalc();
+  }, 0);
+}
+
+
+/*
+  Reset ค่า input ที่เกี่ยวข้อง เมื่อมีการเปลี่ยน dropdown
+*/
+function resetValueOnDropdownChange(id){
+
+  /*
+    เปลี่ยนประเภทดาวน์:
+    reset ค่าเงินดาวน์เป็น 0
+  */
+  if(id === 'downType'){
+    setVal('downInput', 0);
+    return;
+  }
+
+  /*
+    เปิด/ปิด Balloon:
+    reset ค่า Balloon เป็น 0
+    ถ้าปิด Balloon ให้ประเภทกลับเป็น amount
+  */
+  if(id === 'balloonEnable'){
+    setVal('balloonInput', 0);
+
+    if(getVal('balloonEnable') === 'false'){
+      setVal('balloonType', 'amount');
+    }
+
+    return;
+  }
+
+  /*
+    เปลี่ยนประเภท Balloon:
+    reset ค่า Balloon เป็น 0
+  */
+  if(id === 'balloonType'){
+    setVal('balloonInput', 0);
+    return;
+  }
+
+  /*
+    เปลี่ยนโหมด Flat / IRR:
+    reset Flat Rate เป็น 0
+  */
+  if(id === 'mode'){
+    setVal('flatRate', 0);
+    return;
+  }
+
+  /*
+    เปลี่ยนฐานคอม:
+    reset % คอม และ extra คอม
+  */
+  if(id === 'commBaseChoice'){
+    setVal('commPct', 0);
+    setVal('commExtra', 0);
+    return;
+  }
+}
+
+
+/*
+  Handler กลางสำหรับ input/change
+*/
+function handleAutoCalcEvent(e){
+  const el = e.target;
+  if(!el) return;
+
+  const tag = el.tagName;
+  const id = el.id;
+
+  if(!['INPUT','SELECT','TEXTAREA'].includes(tag)) return;
+
+
+  /*
+    ถ้าเป็น dropdown ให้ reset ค่าเกี่ยวข้องก่อน
+  */
+  if(tag === 'SELECT'){
+    resetValueOnDropdownChange(id);
+  }
+
+
+  /*
+    Term unit:
+    ไม่ reset เป็น 0
+    แต่แปลง ปี <-> เดือน เหมือน logic เดิม
+  */
+  if(id === 'termUnit'){
+    const newUnit = el.value;
+    onTermUnitChange(_prevTermUnit, newUnit);
+    _prevTermUnit = newUnit;
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    Mode:
+    toggle IRR row ก่อนคำนวณ
+  */
+  if(id === 'mode'){
+    uiToggleMode();
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    Balloon:
+    show/hide field ก่อนคำนวณ
+  */
+  if(id === 'balloonEnable'){
+    toggleBalloonUI();
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    Language:
+    เปลี่ยนข้อความก่อนคำนวณ
+    ไม่ reset ค่าเงิน
+  */
+  if(id === 'quoteLang'){
+    applyQuoteLang(el.value);
+    scheduleRecalc();
+    return;
+  }
+
+
+  /*
+    ทุก input/select อื่น ๆ คำนวณใหม่
+  */
+  scheduleRecalc();
+}
+
+
+/*
+  input:
+  ใช้กับช่องที่ user พิมพ์
+*/
+document.addEventListener('input', handleAutoCalcEvent);
+
+
+/*
+  change:
+  สำคัญสำหรับ select, checkbox, date
+*/
+document.addEventListener('change', handleAutoCalcEvent);
+
+
+/*
+  Goal seek shortcut
+*/
+document.addEventListener('keydown', e => {
+  if(e.ctrlKey && e.key === 'Enter'){
+    e.preventDefault();
+    goalSeekDown();
+  }
 });
-document.addEventListener('change',e=>{
-  if(!['INPUT','SELECT'].includes(e.target.tagName))return;
-  if(e.target.id==='termUnit')return;
-  if(e.target.id==='mode')uiToggleMode();
-  if(e.target.id==='balloonEnable')toggleBalloonUI();
-  if(e.target.id==='quoteLang'){applyQuoteLang(e.target.value);recalc();return;}
+
+
+/*
+  Initial load
+*/
+window.addEventListener('DOMContentLoaded', () => {
+
+  _prevTermUnit = $('termUnit') ? $('termUnit').value : 'years';
+
+  /*
+    ต้อง setup ก่อน recalc
+    เพราะ function นี้เปลี่ยน input[type=number] เป็น text
+    และใส่ data-num="1"
+  */
+  setupNumericFormatting();
+
+  applyQuoteLang($('quoteLang') ? $('quoteLang').value : 'EN');
+
+  uiToggleMode();
+  toggleBalloonUI();
+
   recalc();
-});
-document.addEventListener('keydown',e=>{if(e.ctrlKey&&e.key==='Enter'){e.preventDefault();goalSeekDown();}});
-window.addEventListener('DOMContentLoaded',()=>{
-  _prevTermUnit=$('termUnit')?$('termUnit').value:'years';
-   setupNumericFormatting();applyQuoteLang('EN');uiToggleMode();toggleBalloonUI();recalc();
- 
-  document.addEventListener('wheel',e=>{if(document.activeElement&&document.activeElement.getAttribute('data-num')==='1')document.activeElement.blur();},{passive:false});
-  if($('btnSolveIRR'))$('btnSolveIRR').addEventListener('click',solveFlatFromIRR);
-  if($('btnGoalSeek'))$('btnGoalSeek').addEventListener('click',goalSeekDown);
+
+  /*
+    Prevent mouse wheel changing numeric-like fields
+  */
+  document.addEventListener('wheel', e => {
+    if(
+      document.activeElement &&
+      document.activeElement.getAttribute('data-num') === '1'
+    ){
+      document.activeElement.blur();
+    }
+  }, { passive:false });
+
+  if($('btnSolveIRR')){
+    $('btnSolveIRR').addEventListener('click', solveFlatFromIRR);
+  }
+
+  if($('btnGoalSeek')){
+    $('btnGoalSeek').addEventListener('click', goalSeekDown);
+  }
 });
 </script>
   
