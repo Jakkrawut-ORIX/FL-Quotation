@@ -907,14 +907,15 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
 /* =====================================================
-   PRINT
+   PRINT — MOBILE SAFE / DESKTOP SAFE
    ===================================================== */
 
 /*
-  Print output:
-  - Uses true A4 canvas
-  - Uses print scale 0.92
-  - Avoids page 2 when Chrome / printer uses Letter by mistake
+  Print strategy:
+  - Internal document is always true A4: 210mm x 297mm
+  - Printed output uses scale 0.92
+  - This helps prevent page 2 when Chrome / printer defaults to Letter
+  - Mobile print must NOT use viewport-based width:100%
 */
 
 @page{
@@ -924,20 +925,17 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 @media print{
 
+  /*
+    Force print variables.
+    This prevents mobile screen preview scale from leaking into print.
+  */
   :root{
     --quote-paper-w:210mm;
     --quote-paper-h:297mm;
 
-    /*
-      Print scale is independent from screen preview scale
-    */
     --quote-print-scale:0.92;
-    --quote-active-scale:var(--quote-print-scale);
+    --quote-active-scale:0.92;
 
-    /*
-      210mm x 0.92 = 193.2mm
-      297mm x 0.92 = 273.24mm
-    */
     --quote-view-w:193.2mm;
     --quote-view-h:273.24mm;
 
@@ -945,17 +943,32 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
+  /*
+    Hard print reset
+
+    Important:
+    Do NOT use width:100% here.
+    Mobile Chrome may calculate 100% from mobile viewport.
+  */
   html,
   body{
+    width:210mm !important;
+    height:297mm !important;
+
+    min-width:210mm !important;
+    max-width:210mm !important;
+
+    min-height:297mm !important;
+    max-height:297mm !important;
+
     margin:0 !important;
     padding:0 !important;
 
-    width:100% !important;
-    height:100% !important;
-
     background:#fff !important;
 
-    font-family:Calibri,Arial,sans-serif !important;
+    overflow:hidden !important;
+
+    font-family:Calibri, Arial, sans-serif !important;
 
     -webkit-print-color-adjust:exact !important;
     print-color-adjust:exact !important;
@@ -963,7 +976,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Hide non-document UI
+    Hide all non-document UI
   */
   .no-print,
   #toast,
@@ -976,23 +989,41 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Remove app spacing
+    App wrapper must also be fixed physical A4.
+    Do not let it inherit mobile viewport width.
   */
   .app{
-    width:100% !important;
-    max-width:none !important;
+    width:210mm !important;
+    height:297mm !important;
+
+    min-width:210mm !important;
+    max-width:210mm !important;
+
+    min-height:297mm !important;
+    max-height:297mm !important;
 
     margin:0 !important;
     padding:0 !important;
+
+    overflow:hidden !important;
   }
 
 
   /*
-    Printed viewport equals final scaled size
+    Printed viewport = final scaled visible area.
+
+    210mm x 0.92 = 193.2mm
+    297mm x 0.92 = 273.24mm
   */
   .quote-section-outer{
-    width:var(--quote-view-w) !important;
-    height:var(--quote-view-h) !important;
+    width:193.2mm !important;
+    height:273.24mm !important;
+
+    min-width:193.2mm !important;
+    max-width:193.2mm !important;
+
+    min-height:273.24mm !important;
+    max-height:273.24mm !important;
 
     margin:0 auto !important;
     padding:0 !important;
@@ -1005,25 +1036,30 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    A4 canvas inside printed viewport
+    True A4 canvas inside the print viewport.
+
+    Important:
+    This must be fixed in mm.
+    Do not use width:100%.
   */
   .quote-wrap{
-    width:var(--quote-paper-w) !important;
-    height:var(--quote-paper-h) !important;
+    width:210mm !important;
+    height:297mm !important;
 
-    min-width:var(--quote-paper-w) !important;
-    max-width:var(--quote-paper-w) !important;
+    min-width:210mm !important;
+    max-width:210mm !important;
 
-    min-height:var(--quote-paper-h) !important;
-    max-height:var(--quote-paper-h) !important;
+    min-height:297mm !important;
+    max-height:297mm !important;
 
     margin:0 !important;
+    padding:0 !important;
+
+    background:#fff !important;
 
     border:none !important;
     border-radius:0 !important;
     box-shadow:none !important;
-
-    background:#fff !important;
 
     overflow:hidden !important;
 
@@ -1031,13 +1067,14 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
     position:relative !important;
 
-    transform:scale(var(--quote-active-scale)) !important;
+    transform:scale(0.92) !important;
     transform-origin:top left !important;
   }
 
 
   /*
-    Keep page content identical to screen layout
+    Inner document content.
+    Keep same visual proportions as designed.
   */
   .q-page{
     width:100% !important;
@@ -1052,13 +1089,12 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     margin:0 !important;
 
     background:#fff !important;
+    color:#111 !important;
+
+    font-family:Calibri, Arial, sans-serif !important;
 
     font-size:11.5px !important;
     line-height:1.65 !important;
-
-    color:#111 !important;
-
-    font-family:Calibri,Arial,sans-serif !important;
 
     display:flex !important;
     flex-direction:column !important;
@@ -1067,6 +1103,9 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
+  /*
+    Body and spacers
+  */
   .q-body{
     flex:1 1 auto !important;
 
@@ -1077,7 +1116,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     overflow:hidden !important;
   }
 
-
   .q-sp{
     flex:1 !important;
     min-height:0 !important;
@@ -1086,6 +1124,36 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   .q-sp-lg{
     flex:0.5 !important;
     min-height:0 !important;
+  }
+
+
+  /*
+    Prevent mobile print from resizing images unexpectedly
+  */
+  img{
+    max-width:none !important;
+  }
+
+  .q-hdr-logo img{
+    width:auto !important;
+    height:60px !important;
+    display:block !important;
+  }
+
+
+  /*
+    Keep table layout stable
+  */
+  .q-tbl{
+    width:100% !important;
+    border-collapse:collapse !important;
+    table-layout:auto !important;
+  }
+
+  .q-tbl th,
+  .q-tbl td{
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
   }
 
 
@@ -1119,7 +1187,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     break-inside:avoid !important;
   }
 
-
   .q-footer-qr{
     flex:0 0 80px !important;
 
@@ -1138,7 +1205,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
     overflow:hidden !important;
   }
-
 
   .q-footer-qrbox{
     width:80px !important;
@@ -1159,7 +1225,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     overflow:hidden !important;
   }
 
-
   .q-footer-qr-image,
   .q-footer-qr img,
   .q-footer-qrbox img{
@@ -1177,7 +1242,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     object-fit:contain !important;
   }
 
-
   .q-footer-text{
     flex:1 1 auto !important;
 
@@ -1194,18 +1258,15 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     text-align:justify !important;
   }
 
-
   .q-footer-text p,
   .q-footer-text div{
     margin:0 !important;
   }
 
-
   .q-footer-text a{
     color:#0066cc !important;
     text-decoration:none !important;
   }
-
 
   .q-footer-pagenum{
     flex:0 0 auto !important;
@@ -1229,9 +1290,13 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     Prevent important blocks from splitting
   */
   table,
+  thead,
+  tbody,
   tr,
   td,
   th,
+  .q-ratebox,
+  .q-terms,
   .q-sign,
   .q-footer{
     page-break-inside:avoid !important;
