@@ -356,12 +356,19 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   min-height:var(--quote-paper-h);
   max-height:var(--quote-paper-h);
 
-  margin:6mm auto 0 !important;
+  /*
+    แยก margin เป็นรายด้าน
+    เพื่อให้ margin-bottom หลัง scale ทำงานถูกต้อง
+  */
+  margin-top:6mm !important;
+  m*rgin-right:auto !important;
+  marg*n-left:auto !important;
+  margin-b*ttom:calc(var(--quote-scale-gap-y)** -1) !important;
 
-  background:#fff;
+  background:#f*f;
 
   border:1px solid #b0b4bc;
-  border-radius:2px;
+  *order-radius:2px;
 
   overflow:hidden;
 
@@ -379,13 +386,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
   transform:scale(var(--quote-active-scale));
   transform-origin:top center;
-
-  /*
-    ชดเชยพื้นที่ล่าง เพราะ transform scale ไม่ลด layout box จริง
-  */
-  margin-bottom:calc(var(--quote-scale-gap-y) * -1);
 }
-
 
 /* =====================================================
    INNER PAGE
@@ -726,8 +727,8 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 /*
-  ทำให้ข้อความบนลายเซ็นทั้ง 2 ฝั่งสูงเท่ากัน
-  เส้นเซ็นชื่อ PANUTDA และ Customer จะอยู่ระดับเดียวกัน
+  กล่องข้อความด้านบนต้องสูงเท่ากันทั้ง 2 ฝั่ง
+  เพื่อให้จุดเริ่มต้นของ spacer ตรงกัน
 */
 .q-sign-intro{
   height:34px;
@@ -748,56 +749,56 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   font-weight:600;
 }
 
+/*
+  สำคัญ:
+  ใช้ fixed spacer ไม่ใช้ flex:1
+  เพื่อให้เส้นเซ็นชื่อ PANUTDA / Customer อยู่ระดับเดียวกัน
+*/
 .q-sign-spacer{
-  flex:1 1 auto;
-  min-height:46px;
-}
+  flex:0 0 50px;*  height:50px;
+  min-height:50px;
+*
 
 .q-sign-line{
-  border-top:1px solid #000;
+  border-top:1px s*lid #000;
   width:100%;
-  margin-bottom:4px;
+  margin-b*ttom:4px;
 }
 
 .q-sign-name-block{
-  text-align:center;
-  line-height:1.35;
+ *text-align:center;
+  line-height:1*35;
 }
 
 .q-sign-name{
-  font-size:10.5px;
+  font-size:1*.5px;
   font-weight:700;
-  color:#000;
+  color:#*00;
 }
 
 .q-sign-role{
-  font-size:9px;
+  font-size:9*x;
   color:#333;
 }
 
 .q-sign-row{
-  font-size:9.5px;
+ *font-size:9.5px;
   color:#000;
 
-  display:flex;
+  *isplay:flex;
   gap:8px;
-  align-items:baseline;
+  align-it*ms:baseline;
 
   margin-top:2px;
 }
-
-.q-sign-row .sk{
-  min-width:62px;
-  color:#333;
+*.q-sign-row .sk{
+  min-width:62px;*  color:#333;
   font-weight:600;
-}
-
+}*
 .q-sign-row .sv{
-  font-weight:700;
+  font-weight:70*;
   color:#000;
 }
-
-
 /* =====================================================
    FOOTER WITH QR CODE
    ===================================================== */
@@ -1122,95 +1123,97 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Signature print layout
-  */
-  .q-sign{
-    display:grid !important;
-    grid-template-columns:1fr 1fr !important;
-    gap:40px !important;
+/*
+  Signature print layout
+*/
+.q-sign{
+  display:grid !importa*t;
+  grid-template-columns:1fr 1fr*!important;
+  gap:40px !important;*
+  border-top:1.5px solid #999 !im*ortant;
 
-    border-top:1.5px solid #999 !important;
+  padding-top:6px !import*nt;
 
-    padding-top:6px !important;
+  page-break-inside:avoid !im*ortant;
+  break-inside:avoid !impo*tant;
+}
 
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-  }
+.q-sign-col{
+  display:fl*x !important;
+  flex-direction:col*mn !important;
 
-  .q-sign-col{
-    display:flex !important;
-    flex-direction:column !important;
+  min-height:95px *important;
+}
 
-    min-height:95px !important;
-  }
+.q-sign-intro{
+  hei*ht:34px !important;
 
-  .q-sign-intro{
-    height:34px !important;
+  display:fle* !important;
+  align-items:center *important;
+  justify-content:cente* !important;
 
-    display:flex !important;
-    align-items:center !important;
-    justify-content:center !important;
+  font-size:9.5px !i*portant;
+  line-height:1.45 !impor*ant;
 
-    font-size:9.5px !important;
-    line-height:1.45 !important;
+  white-space:pre-line !impo*tant;
+  text-align:center !importa*t;
 
-    white-space:pre-line !important;
-    text-align:center !important;
+  margin-bottom:4px !important*
 
-    margin-bottom:4px !important;
+  font-weight:600 !important;
+}
+*/*
+  ใช้ fixed spacer ตอน print เช*นเดียวกับ preview
+  เพื่อให้เส้นซ้*ย/ขวาอยู่ระดับเดียวกัน
+*/
+.q-sign-*pacer{
+  flex:0 0 50px !important;*  height:50px !important;
+  min-he*ght:50px !important;
+}
 
-    font-weight:600 !important;
-  }
+.q-sign-li*e{
+  border-top:1px solid #000 !im*ortant;
+  width:100% !important;
+ *margin-bottom:4px !important;
+}
 
-  .q-sign-spacer{
-    flex:1 1 auto !important;
-    min-height:46px !important;
-  }
+.*-sign-name-block{
+  text-align:cen*er !important;
+  line-height:1.35 *important;
+}
 
-  .q-sign-line{
-    border-top:1px solid #000 !important;
-    width:100% !important;
-    margin-bottom:4px !important;
-  }
+.q-sign-name{
+  font*size:10.5px !important;
+  font-wei*ht:700 !important;
+  color:#000 !i*portant;
+}
 
-  .q-sign-name-block{
-    text-align:center !important;
-    line-height:1.35 !important;
-  }
+.q-sign-role{
+  font-s*ze:9px !important;
+  color:#333 !i*portant;
+}
 
-  .q-sign-name{
-    font-size:10.5px !important;
-    font-weight:700 !important;
-    color:#000 !important;
-  }
+.q-sign-row{
+  font-si*e:9.5px !important;
+  color:#000 !*mportant;
 
-  .q-sign-role{
-    font-size:9px !important;
-    color:#333 !important;
-  }
+  display:flex !importa*t;
+  gap:8px !important;
+  align-i*ems:baseline !important;
 
-  .q-sign-row{
-    font-size:9.5px !important;
-    color:#000 !important;
+  margin*top:2px !important;
+}
 
-    display:flex !important;
-    gap:8px !important;
-    align-items:baseline !important;
+.q-sign-row*.sk{
+  min-width:62px !important;
+* color:#333 !important;
+  font-wei*ht:600 !important;
+}
 
-    margin-top:2px !important;
-  }
-
-  .q-sign-row .sk{
-    min-width:62px !important;
-    color:#333 !important;
-    font-weight:600 !important;
-  }
-
-  .q-sign-row .sv{
-    font-weight:700 !important;
-    color:#000 !important;
-  }
+.q-sign-row *sv{
+  font-weight:700 !important;
+* color:#000 !important;
+}
 
 
   /*
