@@ -219,7 +219,10 @@
     <!-- Controls bar (hidden on print) -->
     <div class="quote-controls no-print">
       <label>ภาษา / Language</label>
-      <select id="quoteLang"><option value="TH">ภาษาไทย</option><option value="EN" selected>ภาษาไทย</option></select>
+      <select id="quoteLang">
+  <option value="TH" selected>ภาษาไทย</option>
+  <option value="EN">English</option>
+</select>
       <div class="spacer"></div>
       <button class="btn-ghost btn-sm" onclick="exportExcel()">📊 Export Excel</button>
       <button class="btn-primary btn-sm" onclick="window.print()">🖨 Print</button>
