@@ -296,7 +296,7 @@ async exportExcel() {
     wb.creator = 'Thai ORIX Leasing';
     wb.created = new Date();
 
-    const lang = $('quoteLang') ? $('quoteLang').value : 'EN';
+    const lang = $('quoteLang') ? $('quoteLang').value : 'TH';
     const isTH = lang === 'TH';
 
     const getText = (id) => {
