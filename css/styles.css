@@ -356,7 +356,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   min-height:var(--quote-paper-h);
   max-height:var(--quote-paper-h);
 
-  margin:0 auto;
+  margin:6mm auto 0 !important;
 
   background:#fff;
 
@@ -1025,7 +1025,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     min-height:273.24mm !important;
     max-height:273.24mm !important;
 
-    margin:0 auto !important;
+    margin:6mm auto 0 !important;
     padding:0 !important;
 
     background:#fff !important;
