@@ -14,7 +14,7 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--bg);color:var(--txt);font-family:var(--font);font-size:14px;line-height:1.6;min-height:100vh;}
 .app{max-width:1220px;margin:0 auto;padding:24px 18px 100px;}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:10px;padding-bottom:16px;border-bottom:1px solid var(--border);}
 .ph-left h1{font-size:21px;font-weight:700;letter-spacing:-0.3px;color:var(--txt);line-height:1.2;}
 .ph-left h1 span{color:var(--blue);}
 .ph-left p{color:var(--muted);font-size:12px;margin-top:3px;}
