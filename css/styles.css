@@ -141,11 +141,11 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
   2. Screen preview:
      - Uses --quote-screen-scale
-     - Responsive scale ทำให้ preview fit ตามหน้าจอ
+     - Responsive scale makes preview fit screen
 
   3. Print:
      - Uses --quote-print-scale
-     - Default 0.92 เพื่อกันตกหน้า 2 ถ้า Chrome / Printer เป็น Letter
+     - Default 0.92 to reduce risk of page 2 on Letter
 
   4. No HTML change required.
 */
@@ -156,29 +156,25 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
    ===================================================== */
 
 :root{
-  /*
-    True A4 document size
-  */
   --quote-paper-w:210mm;
   --quote-paper-h:297mm;
 
   /*
-    Print scale
+    Print scale:
     0.92 = Letter-safe mode
-    ถ้าต้องการ A4 เต็มจริง เปลี่ยนเป็น 1
+    1 = true full A4, but may overflow if printer is Letter
   */
   --quote-print-scale:0.92;
 
   /*
-    Screen preview scale
-    Desktop default
+    Desktop preview scale
   */
   --quote-screen-scale:0.92;
 
   /*
-    Active scale
-    Screen ใช้ screen scale
-    Print จะ override เป็น print scale
+    Active scale:
+    screen = screen scale
+    print = print scale
   */
   --quote-active-scale:var(--quote-screen-scale);
 
@@ -191,12 +187,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   --quote-view-h:273.24mm;
 
   /*
-    transform:scale() ไม่ลด layout box จริง
-    จึงต้องดึงพื้นที่ด้านล่างกลับ
-
-    297mm - 273.24mm = 23.76mm
+    Because transform:scale() does not reduce actual layout box,
+    we pull the unused bottom space back with a negative margin.
   */
-  --quote-scale-gap-y:23.76mm;
+  --quote-scale-gap-y-neg:-23.76mm;
 }
 
 
@@ -204,63 +198,48 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
    RESPONSIVE SCREEN PREVIEW SCALE
    ===================================================== */
 
-/*
-  Desktop / large screen:
-  scale 0.92
-*/
-
 @media screen and (max-width:900px){
   :root{
     --quote-screen-scale:0.78;
-
-    --quote-view-w:163.8mm;    /* 210 x 0.78 */
-    --quote-view-h:231.66mm;   /* 297 x 0.78 */
-
-    --quote-scale-gap-y:65.34mm;
+    --quote-view-w:163.8mm;
+    --quote-view-h:231.66mm;
+    --quote-scale-gap-y-neg:-65.34mm;
   }
 }
 
 @media screen and (max-width:760px){
   :root{
     --quote-screen-scale:0.68;
-
     --quote-view-w:142.8mm;
     --quote-view-h:201.96mm;
-
-    --quote-scale-gap-y:95.04mm;
+    --quote-scale-gap-y-neg:-95.04mm;
   }
 }
 
 @media screen and (max-width:620px){
   :root{
     --quote-screen-scale:0.56;
-
     --quote-view-w:117.6mm;
     --quote-view-h:166.32mm;
-
-    --quote-scale-gap-y:130.68mm;
+    --quote-scale-gap-y-neg:-130.68mm;
   }
 }
 
 @media screen and (max-width:480px){
   :root{
     --quote-screen-scale:0.46;
-
     --quote-view-w:96.6mm;
     --quote-view-h:136.62mm;
-
-    --quote-scale-gap-y:160.38mm;
+    --quote-scale-gap-y-neg:-160.38mm;
   }
 }
 
 @media screen and (max-width:390px){
   :root{
     --quote-screen-scale:0.40;
-
     --quote-view-w:84mm;
     --quote-view-h:118.8mm;
-
-    --quote-scale-gap-y:178.2mm;
+    --quote-scale-gap-y-neg:-178.2mm;
   }
 }
 
@@ -277,9 +256,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
   padding:28px 20px 32px;
 
-  /*
-    ถ้าหน้าจอเล็กมาก ให้ scroll ได้
-  */
   overflow:auto;
 }
 
@@ -338,14 +314,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
    A4 PAPER CANVAS
    ===================================================== */
 
-/*
-  Important:
-  - Actual document is always A4.
-  - Screen preview is scaled by --quote-screen-scale.
-  - Print is scaled by --quote-print-scale.
-  - No HTML wrapper required.
-*/
-
 .quote-wrap{
   width:var(--quote-paper-w);
   height:var(--quote-paper-h);
@@ -357,18 +325,18 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   max-height:var(--quote-paper-h);
 
   /*
-    แยก margin เป็นรายด้าน
-    เพื่อให้ margin-bottom หลัง scale ทำงานถูกต้อง
+    Use separate margin sides.
+    Do not use shorthand margin here, otherwise margin-bottom compensation can break.
   */
   margin-top:6mm !important;
-  m*rgin-right:auto !important;
-  marg*n-left:auto !important;
-  margin-b*ttom:calc(var(--quote-scale-gap-y)** -1) !important;
+  margin-right:auto !important;
+  margin-left:auto !important;
+  margin-bottom:var(--quote-scale-gap-y-neg) !important;
 
-  background:#f*f;
+  background:#fff;
 
   border:1px solid #b0b4bc;
-  *order-radius:2px;
+  border-radius:2px;
 
   overflow:hidden;
 
@@ -388,6 +356,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   transform-origin:top center;
 }
 
+
 /* =====================================================
    INNER PAGE
    ===================================================== */
@@ -400,6 +369,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   top:0;
   left:0;
 
+  /*
+    Inner margin of the quotation content.
+    Top increased slightly, bottom reduced slightly.
+  */
   padding:3.2% 3.2% 2.0%;
 
   background:#fff;
@@ -727,8 +700,8 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 /*
-  กล่องข้อความด้านบนต้องสูงเท่ากันทั้ง 2 ฝั่ง
-  เพื่อให้จุดเริ่มต้นของ spacer ตรงกัน
+  Equal height intro:
+  keeps PANUTDA and Customer signature lines aligned.
 */
 .q-sign-intro{
   height:34px;
@@ -750,55 +723,60 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 /*
-  สำคัญ:
-  ใช้ fixed spacer ไม่ใช้ flex:1
-  เพื่อให้เส้นเซ็นชื่อ PANUTDA / Customer อยู่ระดับเดียวกัน
+  Fixed spacer:
+  do not use flex:1 here, otherwise left/right lines can become uneven.
 */
 .q-sign-spacer{
-  flex:0 0 50px;*  height:50px;
+  flex:0 0 50px;
+  height:50px;
   min-height:50px;
-*
+}
 
 .q-sign-line{
-  border-top:1px s*lid #000;
+  border-top:1px solid #000;
   width:100%;
-  margin-b*ttom:4px;
+  margin-bottom:4px;
 }
 
 .q-sign-name-block{
- *text-align:center;
-  line-height:1*35;
+  text-align:center;
+  line-height:1.35;
 }
 
 .q-sign-name{
-  font-size:1*.5px;
+  font-size:10.5px;
   font-weight:700;
-  color:#*00;
+  color:#000;
 }
 
 .q-sign-role{
-  font-size:9*x;
+  font-size:9px;
   color:#333;
 }
 
 .q-sign-row{
- *font-size:9.5px;
+  font-size:9.5px;
   color:#000;
 
-  *isplay:flex;
+  display:flex;
   gap:8px;
-  align-it*ms:baseline;
+  align-items:baseline;
 
   margin-top:2px;
 }
-*.q-sign-row .sk{
-  min-width:62px;*  color:#333;
+
+.q-sign-row .sk{
+  min-width:62px;
+  color:#333;
   font-weight:600;
-}*
+}
+
 .q-sign-row .sv{
-  font-weight:70*;
+  font-weight:700;
   color:#000;
 }
+
+
 /* =====================================================
    FOOTER WITH QR CODE
    ===================================================== */
@@ -919,6 +897,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   text-align:right;
 }
 
+.hidden{
+  display:none !important;
+}
+
 
 /* =====================================================
    PRINT — MOBILE SAFE / DESKTOP SAFE
@@ -941,7 +923,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     --quote-view-w:193.2mm;
     --quote-view-h:273.24mm;
 
-    --quote-scale-gap-y:23.76mm;
+    --quote-scale-gap-y-neg:-23.76mm;
   }
 
 
@@ -997,6 +979,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
+  /*
+    Final visible print viewport after scaling.
+    Top margin moves the whole document down slightly.
+  */
   .quote-section-outer{
     width:193.2mm !important;
     height:273.24mm !important;
@@ -1007,11 +993,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     min-height:273.24mm !important;
     max-height:273.24mm !important;
 
-    /*
-      เลื่อนทั้งเอกสารลงจากหัวกระดาษจริงเล็กน้อย
-    */
     margin:6mm auto 0 !important;
-
     padding:0 !important;
 
     background:#fff !important;
@@ -1021,6 +1003,9 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
+  /*
+    True A4 canvas inside print viewport.
+  */
   .quote-wrap{
     width:210mm !important;
     height:297mm !important;
@@ -1123,97 +1108,95 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-/*
-  Signature print layout
-*/
-.q-sign{
-  display:grid !importa*t;
-  grid-template-columns:1fr 1fr*!important;
-  gap:40px !important;*
-  border-top:1.5px solid #999 !im*ortant;
+  /*
+    Signature print layout
+  */
+  .q-sign{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:40px !important;
 
-  padding-top:6px !import*nt;
+    border-top:1.5px solid #999 !important;
+    padding-top:6px !important;
 
-  page-break-inside:avoid !im*ortant;
-  break-inside:avoid !impo*tant;
-}
+    page-break-inside:avoid !important;
+    break-inside:avoid !important;
+  }
 
-.q-sign-col{
-  display:fl*x !important;
-  flex-direction:col*mn !important;
+  .q-sign-col{
+    display:flex !important;
+    flex-direction:column !important;
 
-  min-height:95px *important;
-}
+    min-height:95px !important;
+  }
 
-.q-sign-intro{
-  hei*ht:34px !important;
+  .q-sign-intro{
+    height:34px !important;
 
-  display:fle* !important;
-  align-items:center *important;
-  justify-content:cente* !important;
+    display:flex !important;
+    align-items:center !important;
+    justify-content:center !important;
 
-  font-size:9.5px !i*portant;
-  line-height:1.45 !impor*ant;
+    font-size:9.5px !important;
+    line-height:1.45 !important;
 
-  white-space:pre-line !impo*tant;
-  text-align:center !importa*t;
+    white-space:pre-line !important;
+    text-align:center !important;
 
-  margin-bottom:4px !important*
+    margin-bottom:4px !important;
 
-  font-weight:600 !important;
-}
-*/*
-  ใช้ fixed spacer ตอน print เช*นเดียวกับ preview
-  เพื่อให้เส้นซ้*ย/ขวาอยู่ระดับเดียวกัน
-*/
-.q-sign-*pacer{
-  flex:0 0 50px !important;*  height:50px !important;
-  min-he*ght:50px !important;
-}
+    font-weight:600 !important;
+  }
 
-.q-sign-li*e{
-  border-top:1px solid #000 !im*ortant;
-  width:100% !important;
- *margin-bottom:4px !important;
-}
+  .q-sign-spacer{
+    flex:0 0 50px !important;
+    height:50px !important;
+    min-height:50px !important;
+  }
 
-.*-sign-name-block{
-  text-align:cen*er !important;
-  line-height:1.35 *important;
-}
+  .q-sign-line{
+    border-top:1px solid #000 !important;
+    width:100% !important;
+    margin-bottom:4px !important;
+  }
 
-.q-sign-name{
-  font*size:10.5px !important;
-  font-wei*ht:700 !important;
-  color:#000 !i*portant;
-}
+  .q-sign-name-block{
+    text-align:center !important;
+    line-height:1.35 !important;
+  }
 
-.q-sign-role{
-  font-s*ze:9px !important;
-  color:#333 !i*portant;
-}
+  .q-sign-name{
+    font-size:10.5px !important;
+    font-weight:700 !important;
+    color:#000 !important;
+  }
 
-.q-sign-row{
-  font-si*e:9.5px !important;
-  color:#000 !*mportant;
+  .q-sign-role{
+    font-size:9px !important;
+    color:#333 !important;
+  }
 
-  display:flex !importa*t;
-  gap:8px !important;
-  align-i*ems:baseline !important;
+  .q-sign-row{
+    font-size:9.5px !important;
+    color:#000 !important;
 
-  margin*top:2px !important;
-}
+    display:flex !important;
+    gap:8px !important;
+    align-items:baseline !important;
 
-.q-sign-row*.sk{
-  min-width:62px !important;
-* color:#333 !important;
-  font-wei*ht:600 !important;
-}
+    margin-top:2px !important;
+  }
 
-.q-sign-row *sv{
-  font-weight:700 !important;
-* color:#000 !important;
-}
+  .q-sign-row .sk{
+    min-width:62px !important;
+    color:#333 !important;
+    font-weight:600 !important;
+  }
+
+  .q-sign-row .sv{
+    font-weight:700 !important;
+    color:#000 !important;
+  }
 
 
   /*
