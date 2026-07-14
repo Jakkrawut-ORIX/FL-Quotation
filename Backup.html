@@ -599,13 +599,22 @@ function applyQuoteLang(lang){
   setText('lbl_customer',TH?'ลูกค้า':'Customer');
   setText('lbl_date',TH?'วันที่':'Date');
   
-  // Toggle footer content based on language
+ // Toggle footer content based on language
+const footerEN = $('q_footer_content_en');
+const footerTH = $('q_footer_content_th');
+
+if(footerEN && footerTH){
+
+  // reset inline display ก่อน
+  footerEN.style.display = '';
+  footerTH.style.display = '';
+
   if(TH){
-    $('q_footer_content_en').style.display='none';
-    $('q_footer_content_th').style.display='block';
+    footerEN.classList.add('hidden');
+    footerTH.classList.remove('hidden');
   }else{
-    $('q_footer_content_en').style.display='block';
-    $('q_footer_content_th').style.display='none';
+    footerEN.classList.remove('hidden');
+    footerTH.classList.add('hidden');
   }
 }
 
