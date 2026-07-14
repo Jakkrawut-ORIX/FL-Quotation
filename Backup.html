@@ -661,7 +661,7 @@ function recalc(){
 
   setText('q_to',custName);setText('q_from',fromName);
   setText('q_no',quotationNo||'');setText('q_issue',issueDisp);
-  setText('q_expire',issueDisp?(validDays+(TH?' วัน นับจากวันราคา':' days after the issue date')):'');
+  setText('q_expire',issueDisp?(validDays+(TH?' วัน นับจากวันที่เสนอราคา':' days after the issue date')):'');
   var ae=$('q_asset');if(ae)ae.textContent=assetName||'';
   var ce=$('q_color');if(ce)ce.textContent=assetColor||'';
   setText('q_list',fmt2(inp.gross));setText('q_deposit',fmt2(downBaht));
