@@ -617,7 +617,7 @@ if(footerEN && footerTH){
     footerTH.classList.add('hidden');
   }
 }
-
+}
 function recalc(){
   var inp=readInputs();
   var vatPct=inp.vatPct,years=inp.years,months=inp.months,flatRate=inp.flatRate,net=inp.net;
@@ -1321,9 +1321,14 @@ async function exportExcel(){
     qs.mergeCells(`C${ft}:I${ft + 4}`);
     qs.mergeCells(`J${ft}:K${ft + 4}`);
 
-    const footerText = isTH
-      ? getText('q_footer_content_th')
-      : getText('q_footer_content_en');
+    const getRawText = id => {
+  const el = $(id);
+  return el ? (el.textContent || '').replace(/\s+/g, ' ').trim() : '';
+};
+
+const footerText = isTH
+  ? getRawText('q_footer_content_th')
+  : getRawText('q_footer_content_en');
 
     qs.getCell(`C${ft}`).value = footerText;
 
@@ -1722,9 +1727,11 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 </script>
   
-<script src="./js/vendor/qrcode.min.js"></script>
+./js/vendor/qrcode.min.jsscript>
 <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
-<script type="module" src="./js/app.js"></script>
+
+<!-- ปิดไว้ก่อน ถ้ายังใช้ inline script อยู่ -->
+<!-- ./js/app.js</script> -->
 
 </body>
 </html>
