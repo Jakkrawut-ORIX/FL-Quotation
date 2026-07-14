@@ -833,7 +833,7 @@ function setupNumericFormatting(){
 document.addEventListener('change',e=>{
   if(e.target.id==='termUnit'){var nu=e.target.value;onTermUnitChange(_prevTermUnit,nu);_prevTermUnit=nu;recalc();}
 });
-document.addEventListener('input',e=>{
+document.addEventListener('change',e=>{
   if(!['INPUT','SELECT'].includes(e.target.tagName))return;
   if(e.target.id==='termUnit')return;
   if(e.target.id==='mode')uiToggleMode();
