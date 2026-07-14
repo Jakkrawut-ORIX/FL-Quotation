@@ -129,25 +129,184 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 #toast.success{background:#0d3d22;color:#7eeabc;border:1px solid rgba(110,220,166,.3);}
 #toast.error{background:#3a0810;color:#f7a0aa;border:1px solid rgba(220,60,80,.3);}
 
-/* ===== QUOTATION — A4 PAGE LAYOUT ===== */
+/* =====================================================
+   QUOTATION — A4 PREVIEW FIT + PRINT SCALE
+   ===================================================== */
 
-/* 
-  Outer wrapper:
-  ใช้เป็นพื้นหลังสีเทาเพื่อให้ preview เหมือนกระดาษวางบนโต๊ะ
+/*
+  Concept
+
+  1. Internal document canvas:
+     - Always true A4: 210mm x 297mm
+
+  2. Screen preview:
+     - Uses --quote-screen-scale
+     - Responsive scale ทำให้ preview fit ตามหน้าจอ
+
+  3. Print:
+     - Uses --quote-print-scale
+     - Default 0.92 เพื่อกันตกหน้า 2 ถ้า Chrome / Printer เป็น Letter
+
+  4. No HTML change required.
 */
-.quote-section-outer{
-  margin-top:28px;
-  background:#c8cbd2;
-  border-radius:6px;
-  padding:28px 20px 32px;
+
+
+/* =====================================================
+   SHARED VARIABLES
+   ===================================================== */
+
+:root{
+  /*
+    True A4 document size
+  */
+  --quote-paper-w:210mm;
+  --quote-paper-h:297mm;
+
+  /*
+    Print scale
+    0.92 = Letter-safe mode
+    ถ้าต้องการ A4 เต็มจริง เปลี่ยนเป็น 1
+  */
+  --quote-print-scale:0.92;
+
+  /*
+    Screen preview scale
+    Desktop default
+  */
+  --quote-screen-scale:0.92;
+
+  /*
+    Active scale
+    Screen ใช้ screen scale
+    Print จะ override เป็น print scale
+  */
+  --quote-active-scale:var(--quote-screen-scale);
+
+  /*
+    Scaled visual size for desktop preview
+    210mm x 0.92 = 193.2mm
+    297mm x 0.92 = 273.24mm
+  */
+  --quote-view-w:193.2mm;
+  --quote-view-h:273.24mm;
+
+  /*
+    transform:scale() ไม่ลด layout box จริง
+    จึงต้องดึงพื้นที่ด้านล่างกลับ
+
+    297mm - 273.24mm = 23.76mm
+  */
+  --quote-scale-gap-y:23.76mm;
 }
 
-/* Controls bar above the paper */
+
+/* =====================================================
+   RESPONSIVE SCREEN PREVIEW SCALE
+   ===================================================== */
+
+/*
+  Desktop / large screen:
+  scale 0.92
+*/
+
+@media screen and (max-width:900px){
+  :root{
+    --quote-screen-scale:0.78;
+
+    --quote-view-w:163.8mm;    /* 210 x 0.78 */
+    --quote-view-h:231.66mm;   /* 297 x 0.78 */
+
+    --quote-scale-gap-y:65.34mm;
+  }
+}
+
+@media screen and (max-width:760px){
+  :root{
+    --quote-screen-scale:0.68;
+
+    --quote-view-w:142.8mm;
+    --quote-view-h:201.96mm;
+
+    --quote-scale-gap-y:95.04mm;
+  }
+}
+
+@media screen and (max-width:620px){
+  :root{
+    --quote-screen-scale:0.56;
+
+    --quote-view-w:117.6mm;
+    --quote-view-h:166.32mm;
+
+    --quote-scale-gap-y:130.68mm;
+  }
+}
+
+@media screen and (max-width:480px){
+  :root{
+    --quote-screen-scale:0.46;
+
+    --quote-view-w:96.6mm;
+    --quote-view-h:136.62mm;
+
+    --quote-scale-gap-y:160.38mm;
+  }
+}
+
+@media screen and (max-width:390px){
+  :root{
+    --quote-screen-scale:0.40;
+
+    --quote-view-w:84mm;
+    --quote-view-h:118.8mm;
+
+    --quote-scale-gap-y:178.2mm;
+  }
+}
+
+
+/* =====================================================
+   OUTER PREVIEW WRAPPER
+   ===================================================== */
+
+.quote-section-outer{
+  margin-top:28px;
+
+  background:#c8cbd2;
+  border-radius:6px;
+
+  padding:28px 20px 32px;
+
+  /*
+    ถ้าหน้าจอเล็กมาก ให้ scroll ได้
+  */
+  overflow:auto;
+}
+
+@media screen and (max-width:620px){
+  .quote-section-outer{
+    padding:18px 10px 24px;
+  }
+}
+
+@media screen and (max-width:480px){
+  .quote-section-outer{
+    padding:14px 8px 20px;
+  }
+}
+
+
+/* =====================================================
+   CONTROLS BAR
+   ===================================================== */
+
 .quote-controls{
   display:flex;
   align-items:center;
   gap:10px;
+
   padding:8px 12px 14px;
+
   font-size:12px;
   color:var(--muted2);
 }
@@ -158,11 +317,15 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 .quote-controls select{
   padding:4px 8px;
+
   border:1px solid var(--border);
   border-radius:var(--rad-sm);
+
   font-size:12px;
   font-family:var(--font);
+
   background:#fff;
+
   cursor:pointer;
 }
 
@@ -171,18 +334,35 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* 
-  A4 Paper Preview
+/* =====================================================
+   A4 PAPER CANVAS
+   ===================================================== */
 
-  สำคัญ:
-  - ใช้ max-width:794px เพื่อรักษาสัดส่วนเดิมที่คุณจูนไว้แล้ว
-  - ใช้ aspect-ratio:210/297 เพื่อให้ preview เป็น A4
-  - ไม่เปลี่ยนเป็น width:210mm บน screen เพราะจะทำให้สัดส่วนที่จูนด้วย px เพี้ยน
+/*
+  Important:
+  - Actual document is always A4.
+  - Screen preview is scaled by --quote-screen-scale.
+  - Print is scaled by --quote-print-scale.
+  - No HTML wrapper required.
 */
+
 .quote-wrap{
+  width:var(--quote-paper-w);
+  height:var(--quote-paper-h);
+
+  min-width:var(--quote-paper-w);
+  max-width:var(--quote-paper-w);
+
+  min-height:var(--quote-paper-h);
+  max-height:var(--quote-paper-h);
+
+  margin:0 auto;
+
   background:#fff;
+
   border:1px solid #b0b4bc;
   border-radius:2px;
+
   overflow:hidden;
 
   box-shadow:
@@ -193,22 +373,24 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
   font-family:Calibri,Arial,sans-serif;
 
-  width:100%;
-  max-width:794px;
-
-  margin:0 auto;
-
-  aspect-ratio:210 / 297;
-
   position:relative;
+
+  aspect-ratio:auto;
+
+  transform:scale(var(--quote-active-scale));
+  transform-origin:top center;
+
+  /*
+    ชดเชยพื้นที่ล่าง เพราะ transform scale ไม่ลด layout box จริง
+  */
+  margin-bottom:calc(var(--quote-scale-gap-y) * -1);
 }
 
 
-/* 
-  Inner page content
+/* =====================================================
+   INNER PAGE
+   ===================================================== */
 
-  คงค่าจาก layout เดิมไว้ เพราะ spacing ทั้งหน้าอ้างอิงจากตรงนี้
-*/
 .q-page{
   width:100%;
   height:100%;
@@ -233,7 +415,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* Body grows to fill remaining height */
+/* =====================================================
+   BODY / SPACERS
+   ===================================================== */
+
 .q-body{
   flex:1 1 auto;
 
@@ -243,11 +428,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   min-height:0;
 }
 
-
-/* 
-  Flex spacers:
-  คงไว้ เพราะ layout เดิมใช้ตัวนี้ถ่วงระยะให้ footer อยู่ตำแหน่งที่เหมาะสม
-*/
 .q-sp{
   flex:1;
   min-height:0;
@@ -259,7 +439,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* ── Header ── */
+/* =====================================================
+   HEADER
+   ===================================================== */
+
 .q-hdr{
   display:grid;
   grid-template-columns:98px 1fr auto;
@@ -326,7 +509,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* ── Info row ── */
+/* =====================================================
+   INFO ROW
+   ===================================================== */
+
 .q-inforow{
   display:grid;
   grid-template-columns:1fr 1fr 1fr;
@@ -389,7 +575,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* ── Main table ── */
+/* =====================================================
+   MAIN TABLE
+   ===================================================== */
+
 .q-tbl{
   width:100%;
   border-collapse:collapse;
@@ -435,7 +624,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* ── Rate box ── */
+/* =====================================================
+   RATE BOX
+   ===================================================== */
+
 .q-ratebox{
   border:1px solid #999;
 }
@@ -472,7 +664,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* ── Terms ── */
+/* =====================================================
+   TERMS
+   ===================================================== */
+
 .q-subject{
   font-size:10.5px;
   font-weight:700;
@@ -508,7 +703,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* ── Signature ── */
+/* =====================================================
+   SIGNATURE
+   ===================================================== */
+
 .q-sign{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -587,67 +785,102 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 
-/* ── Footer with QR Code ── */
+/* =====================================================
+   FOOTER WITH QR CODE
+   ===================================================== */
+
 .q-footer{
-  display:grid;
-  grid-template-columns:75px 1fr 75px;
-  gap:6px 10px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  width:100%;
 
   border-top:0.5px solid #ddd;
 
   padding-top:4px;
   margin-top:6px;
 
-  align-items:flex-start;
-
-  font-size:7.5px;
+  font-size:10px;
 
   break-inside:avoid;
   page-break-inside:avoid;
 }
 
 .q-footer-qr{
+  flex:0 0 80px;
+
+  width:80px;
+  height:80px;
+
+  min-width:80px;
+  max-width:80px;
+
+  min-height:80px;
+  max-height:80px;
+
   display:flex;
-  justify-content:flex-start;
-  align-items:flex-start;
+  align-items:center;
+  justify-content:center;
 
-  width:55px;
-  height:55px;
-
-  flex:none;
+  overflow:hidden;
 }
 
 .q-footer-qrbox{
-  width:55px;
-  height:55px;
+  width:80px;
+  height:80px;
+
+  min-width:80px;
+  max-width:80px;
+
+  min-height:80px;
+  max-height:80px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
   flex:none;
+
+  overflow:hidden;
 }
 
+.q-footer-qr-image,
 .q-footer-qr img,
-.q-footer-qrbox img,
-.q-footer-qr-image{
+.q-footer-qrbox img{
   display:block;
 
-  width:55px;
-  height:55px;
+  width:80px;
+  height:80px;
 
-  min-width:55px;
-  max-width:55px;
+  min-width:80px;
+  max-width:80px;
 
-  min-height:55px;
-  max-height:55px;
+  min-height:80px;
+  max-height:80px;
 
   object-fit:contain;
 }
 
 .q-footer-text{
-  grid-column:2;
+  flex:1 1 auto;
 
-  font-size:7.5px;
-  color:#333;
+  min-height:80px;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+
+  font-size:10px;
   line-height:1.4;
+
+  color:#333;
   text-align:justify;
+}
+
+.q-footer-text p,
+.q-footer-text div{
+  margin:0;
 }
 
 .q-footer-text a{
@@ -656,29 +889,32 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 }
 
 .q-footer-pagenum{
-  grid-column:3;
+  flex:0 0 auto;
 
-  text-align:right;
+  min-height:80px;
 
-  font-size:7.5px;
-  color:#666;
-  font-weight:600;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
 
   white-space:nowrap;
+
+  font-size:10px;
+  color:#666;
+  font-weight:600;
+  text-align:right;
 }
 
 
-/* ── PRINT ── */
+/* =====================================================
+   PRINT
+   ===================================================== */
 
 /*
-  PRINT STRATEGY
-
-  - The internal document remains true A4: 210mm × 297mm.
-  - The whole document is scaled down to 92% on print.
-  - This prevents the footer from falling to page 2
-    if Chrome / printer defaults to Letter.
-  - Do not shrink typography, table spacing, header, or content blocks individually.
-  - Keep the screen layout and print layout visually consistent.
+  Print output:
+  - Uses true A4 canvas
+  - Uses print scale 0.92
+  - Avoids page 2 when Chrome / printer uses Letter by mistake
 */
 
 @page{
@@ -688,25 +924,27 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 @media print{
 
-  /*
-    Scale factor for print safety.
-
-    A4 height = 297mm
-    297mm × 0.92 = 273.24mm
-
-    Letter height = 279.4mm
-
-    So the printed content can still fit on one Letter page
-    if Chrome accidentally defaults to Letter.
-  */
   :root{
-    --print-scale:0.92;
+    --quote-paper-w:210mm;
+    --quote-paper-h:297mm;
+
+    /*
+      Print scale is independent from screen preview scale
+    */
+    --quote-print-scale:0.92;
+    --quote-active-scale:var(--quote-print-scale);
+
+    /*
+      210mm x 0.92 = 193.2mm
+      297mm x 0.92 = 273.24mm
+    */
+    --quote-view-w:193.2mm;
+    --quote-view-h:273.24mm;
+
+    --quote-scale-gap-y:23.76mm;
   }
 
 
-  /*
-    Basic print reset
-  */
   html,
   body{
     margin:0 !important;
@@ -725,7 +963,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Hide non-print UI
+    Hide non-document UI
   */
   .no-print,
   #toast,
@@ -738,7 +976,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Remove application wrapper spacing
+    Remove app spacing
   */
   .app{
     width:100% !important;
@@ -750,19 +988,11 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Print viewport wrapper
-
-    Important:
-    transform:scale() does not change the layout box size.
-
-    Therefore this wrapper must use the already-scaled physical size.
-
-    210mm × 0.92 = 193.2mm
-    297mm × 0.92 = 273.24mm
+    Printed viewport equals final scaled size
   */
   .quote-section-outer{
-    width:193.2mm !important;
-    height:273.24mm !important;
+    width:var(--quote-view-w) !important;
+    height:var(--quote-view-h) !important;
 
     margin:0 auto !important;
     padding:0 !important;
@@ -775,20 +1005,17 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    True A4 document canvas
-
-    Keep the actual quotation document at A4 size internally,
-    then scale the entire page down for print safety.
+    A4 canvas inside printed viewport
   */
   .quote-wrap{
-    width:210mm !important;
-    height:297mm !important;
+    width:var(--quote-paper-w) !important;
+    height:var(--quote-paper-h) !important;
 
-    min-width:210mm !important;
-    max-width:210mm !important;
+    min-width:var(--quote-paper-w) !important;
+    max-width:var(--quote-paper-w) !important;
 
-    min-height:297mm !important;
-    max-height:297mm !important;
+    min-height:var(--quote-paper-h) !important;
+    max-height:var(--quote-paper-h) !important;
 
     margin:0 !important;
 
@@ -796,23 +1023,21 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     border-radius:0 !important;
     box-shadow:none !important;
 
+    background:#fff !important;
+
     overflow:hidden !important;
 
     aspect-ratio:auto !important;
 
     position:relative !important;
 
-    transform:scale(var(--print-scale)) !important;
+    transform:scale(var(--quote-active-scale)) !important;
     transform-origin:top left !important;
   }
 
 
   /*
-    Keep original document proportions
-
-    Do not reset font-size, padding, line-height, header size,
-    or table spacing here. Those overrides were the main reason
-    the previous print output looked compressed.
+    Keep page content identical to screen layout
   */
   .q-page{
     width:100% !important;
@@ -824,22 +1049,24 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
     padding:2.8% 3.2% 2.4% !important;
 
+    margin:0 !important;
+
+    background:#fff !important;
+
     font-size:11.5px !important;
     line-height:1.65 !important;
 
-    background:#fff !important;
     color:#111 !important;
 
     font-family:Calibri,Arial,sans-serif !important;
 
     display:flex !important;
     flex-direction:column !important;
+
+    overflow:hidden !important;
   }
 
 
-  /*
-    Keep document body flexible
-  */
   .q-body{
     flex:1 1 auto !important;
 
@@ -847,16 +1074,10 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     flex-direction:column !important;
 
     min-height:0 !important;
-
     overflow:hidden !important;
   }
 
 
-  /*
-    Preserve existing vertical spacers.
-    The screen layout already depends on these for balancing
-    the signature/footer area.
-  */
   .q-sp{
     flex:1 !important;
     min-height:0 !important;
@@ -869,7 +1090,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Signature block should stay together
+    Keep signature together
   */
   .q-sign{
     page-break-inside:avoid !important;
@@ -878,14 +1099,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Footer layout
-
-    Uses Flex instead of Grid based on your latest footer structure.
-
-    Requirements:
-    - QR fixed at 80px.
-    - Text row vertically centered against QR.
-    - Page number vertically centered against QR.
+    Footer same layout as preview
   */
   .q-footer{
     display:flex !important;
@@ -906,9 +1120,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    QR column
-  */
   .q-footer-qr{
     flex:0 0 80px !important;
 
@@ -929,9 +1140,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    QR box wrapper
-  */
   .q-footer-qrbox{
     width:80px !important;
     height:80px !important;
@@ -952,9 +1160,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    QR image fixed size
-  */
   .q-footer-qr-image,
   .q-footer-qr img,
   .q-footer-qrbox img{
@@ -973,16 +1178,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Footer text
-
-    Key point:
-    The text area uses min-height:80px,
-    same as the QR size.
-
-    Then display:flex + justify-content:center
-    makes the text block vertically centered with the QR.
-  */
   .q-footer-text{
     flex:1 1 auto !important;
 
@@ -1000,10 +1195,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Remove unwanted margin from nested text elements,
-    otherwise the text may look slightly off-center.
-  */
   .q-footer-text p,
   .q-footer-text div{
     margin:0 !important;
@@ -1016,11 +1207,6 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
   }
 
 
-  /*
-    Page number
-
-    Vertically center page number with QR as well.
-  */
   .q-footer-pagenum{
     flex:0 0 auto !important;
 
@@ -1040,7 +1226,7 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
 
 
   /*
-    Prevent important blocks from splitting across pages
+    Prevent important blocks from splitting
   */
   table,
   tr,
