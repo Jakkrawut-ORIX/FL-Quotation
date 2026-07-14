@@ -809,70 +809,100 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     line-height:1.65 !important;
   }
 
-  /*
-    Keep footer layout exactly like screen.
-  */
-  .q-footer{
-    display:grid !important;
-    grid-template-columns:75px 1fr 75px !important;
-    gap:6px 10px !important;
+  /* ── Footer with QR Code ── */
+.q-footer{
+  display:grid;
+  grid-template-columns:75px 1fr 75px;
+  gap:6px 10px;
 
-    width:100% !important;
+  border-top:0.5px solid #ddd;
 
-    margin-top:6px !important;
-    padding-top:4px !important;
-
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-  }
+  padding-top:4px;
+  margin-top:6px;
 
   /*
-    Lock QR size before page scaling.
-    Final visible size will scale together with the whole document.
+    เดิมใช้ flex-start ทำให้ข้อความชิดบน QR
+    เปลี่ยนเป็น center เพื่อให้ข้อความอยู่กึ่งกลางแนวตั้งกับ QR
   */
-  .q-footer-qr,
-  .q-footer-qrbox{
-    width:55px !important;
-    height:55px !important;
+  align-items:center;
 
-    min-width:55px !important;
-    max-width:55px !important;
+  font-size:7.5px;
 
-    min-height:55px !important;
-    max-height:55px !important;
+  break-inside:avoid;
+  page-break-inside:avoid;
+}
 
-    flex:none !important;
+.q-footer-qr{
+  display:flex;
+  justify-content:flex-start;
+  align-items:center;
 
-    overflow:hidden !important;
-  }
+  width:55px;
+  height:55px;
 
-  .q-footer-qr img,
-  .q-footer-qrbox img,
-  .q-footer-qr-image{
-    display:block !important;
+  flex:none;
+}
 
-    width:55px !important;
-    height:55px !important;
+.q-footer-qrbox{
+  width:55px;
+  height:55px;
 
-    min-width:55px !important;
-    max-width:55px !important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 
-    min-height:55px !important;
-    max-height:55px !important;
+  flex:none;
+}
 
-    object-fit:contain !important;
-  }
+.q-footer-qr img,
+.q-footer-qrbox img,
+.q-footer-qr-image{
+  display:block;
+
+  width:55px;
+  height:55px;
+
+  min-width:55px;
+  max-width:55px;
+
+  min-height:55px;
+  max-height:55px;
+
+  object-fit:contain;
+}
+
+.q-footer-text{
+  grid-column:2;
+
+  font-size:7.5px;
+  color:#333;
+  line-height:1.4;
+  text-align:justify;
 
   /*
-    Avoid breaking important blocks.
+    ให้ข้อความจัดกลางในแนวตั้งภายในช่องของตัวเอง
   */
-  table,
-  tr,
-  td,
-  th,
-  .q-sign,
-  .q-footer{
-    page-break-inside:avoid !important;
-    break-inside:avoid !important;
-  }
+  align-self:center;
+}
+
+.q-footer-text a{
+  color:#0066cc;
+  text-decoration:none;
+}
+
+.q-footer-pagenum{
+  grid-column:3;
+
+  text-align:right;
+
+  font-size:7.5px;
+  color:#666;
+  font-weight:600;
+
+  white-space:nowrap;
+
+  /*
+    ให้เลขหน้าอยู่กึ่งกลางแนวตั้งกับ QR เช่นกัน
+  */
+  align-self:center;
 }
