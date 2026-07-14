@@ -665,8 +665,19 @@ function recalc(){
   var quotationNo=getVal('quotationNo'),issueDate=getVal('issueDate');
   var validDays=Math.max(0,getVal('validDays'));
   var assetName=getVal('assetName'),assetColor=getVal('assetColor');
-  var assetQty=Math.max(0,getVal('assetQty'));
-  // date is optional — show blank if not filled in
+  var assetName = getVal('assetName');
+var assetColor = getVal('assetColor')
+/*
+  ต้องอ่านค่า assetQty แบบ raw
+  เพราะ getVal('assetQty') จะเปลี่ยนค่าว่างเป็น 0
+*/
+var assetQtyRaw = $('assetQty')
+  ? String($('assetQty').value || '').replace(/,/g, '').trim()
+  : '';
+
+var assetQty = assetQtyRaw === ''
+  ? ''
+  : Math.max(0, parseInt(assetQtyRaw, 10) || 0);
   var issueDisp=issueDate?issueDate.split('-').reverse().join('/'):'';
   var lang=$('quoteLang')?$('quoteLang').value:'TH';
   var TH=lang==='TH';
