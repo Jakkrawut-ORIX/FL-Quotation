@@ -1582,17 +1582,33 @@ function resetValueOnDropdownChange(id){
     return;
   }
 
-  /*
-    เปลี่ยนฐานคอม:
-    reset % คอม และ extra คอม
-  */
-  if(id === 'commBaseChoice'){
-    setVal('commPct', 0);
-    setVal('commExtra', 0);
-    return;
-  }
-}
+/*
+  เปลี่ยนฐานคอม:
+  reset % คอม และ extra คอม
+  พร้อมเปลี่ยน placeholder ตามฐานคอม
+*/
+if(id === 'commBaseChoice'){
 
+  const commBaseChoice = $('commBaseChoice');
+  const commPct = $('commPct');
+  const commExtra = $('commExtra');
+
+  // เคลียร์ค่าทุกครั้งที่สลับ
+  setVal('commPct', '');
+  setVal('commExtra', '');
+
+  if(commBaseChoice.value === 'interest'){
+    // ดอกเบี้ยรวม
+    commPct.placeholder = '8';
+    commExtra.placeholder = '5000';
+  }else{
+    // ยอดจัด
+    commPct.placeholder = '2.5';
+    commExtra.placeholder = '0';
+  }
+
+  return;
+}
 
 /*
   Handler กลางสำหรับ input/change
