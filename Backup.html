@@ -1544,17 +1544,17 @@ function updateCommBasePlaceholder(clearValue = true){
 
   if(!base || !pct || !extra) return;
 
-  if(clearValue){
-    pct.value = '';
-    extra.value = '';
-  }
-
   if(base.value === 'interest'){
     pct.placeholder = '8';
     extra.placeholder = '5000';
   }else{
     pct.placeholder = '2.5';
     extra.placeholder = '0';
+  }
+
+  if(clearValue){
+    pct.value = '';
+    extra.value = '';
   }
 }
 
@@ -1784,7 +1784,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   uiToggleMode();
   toggleBalloonUI();
-
+  updateCommBasePlaceholder(true);
   recalc();
 
   /*
