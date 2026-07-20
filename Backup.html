@@ -515,6 +515,7 @@ function toggleBalloonUI(){
 function onGuarNone(cb){
   if(cb.checked){$('guar_personal').checked=false;$('guar_corporate').checked=false;}
   else{if(!$('guar_personal').checked&&!$('guar_corporate').checked)cb.checked=true;}
+  
   recalc();
 }
 function onGuarCheck(cb){
@@ -816,6 +817,7 @@ function resetAll(){
 
   uiToggleMode();
   toggleBalloonUI();
+  updateCommBasePlaceholder(false);
   recalc();
 
   showToast('✅ รีเซ็ตข้อมูลเรียบร้อย', 'success');
