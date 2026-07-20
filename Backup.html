@@ -1534,6 +1534,27 @@ function scheduleRecalc(){
   }, 0);
 }
 
+function updateCommBasePlaceholder(clearValue = true){
+
+  const base = $('commBaseChoice');
+  const pct = $('commPct');
+  const extra = $('commExtra');
+
+  if(!base || !pct || !extra) return;
+
+  if(clearValue){
+    pct.value = '';
+    extra.value = '';
+  }
+
+  if(base.value === 'interest'){
+    pct.placeholder = '8';
+    extra.placeholder = '5000';
+  }else{
+    pct.placeholder = '2.5';
+    extra.placeholder = '0';
+  }
+}
 
 /*
   Reset ค่า input ที่เกี่ยวข้อง เมื่อมีการเปลี่ยน dropdown
