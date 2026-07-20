@@ -1561,22 +1561,34 @@ function updateCommBasePlaceholder(clearValue = true){
 /*
   Reset ค่า input ที่เกี่ยวข้อง เมื่อมีการเปลี่ยน dropdown
 */
+function updateCommBasePlaceholder(clearValue = true){
+
+  const base = $('commBaseChoice');
+  const pct = $('commPct');
+  const extra = $('commExtra');
+
+  if(!base || !pct || !extra) return;
+
+  if(clearValue){
+    pct.value = '';
+    extra.value = '';
+  }
+
+  if(base.value === 'interest'){
+    pct.placeholder = '8';
+    extra.placeholder = '5000';
+  }else{
+    pct.placeholder = '2.5';
+    extra.placeholder = '0';
+  }
+}
 function resetValueOnDropdownChange(id){
 
-  /*
-    เปลี่ยนประเภทดาวน์:
-    reset ค่าเงินดาวน์เป็น 0
-  */
   if(id === 'downType'){
     setVal('downInput', 0);
     return;
   }
 
-  /*
-    เปิด/ปิด Balloon:
-    reset ค่า Balloon เป็น 0
-    ถ้าปิด Balloon ให้ประเภทกลับเป็น amount
-  */
   if(id === 'balloonEnable'){
     setVal('balloonInput', 0);
 
@@ -1587,6 +1599,26 @@ function resetValueOnDropdownChange(id){
     return;
   }
 
+  if(id === 'balloonType'){
+    setVal('balloonInput', 0);
+    return;
+  }
+
+  if(id === 'mode'){
+    setVal('flatRate', 0);
+    return;
+  }
+
+  if(id === 'commBaseChoice'){
+    updateCommBasePlaceholder(true);
+    return;
+  }
+
+}
+  /*
+  Handler กลางสำหรับ input/change
+*/
+function handleAutoCalcEvent(e){
   /*
     เปลี่ยนประเภท Balloon:
     reset ค่า Balloon เป็น 0
