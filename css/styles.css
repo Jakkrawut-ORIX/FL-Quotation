@@ -164,12 +164,12 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     0.92 = Letter-safe mode
     1 = true full A4, but may overflow if printer is Letter
   */
-  --quote-print-scale:0.92;
+  --quote-print-scale:0.90;
 
   /*
     Desktop preview scale
   */
-  --quote-screen-scale:0.92;
+  --quote-screen-scale:0.90;
 
   /*
     Active scale:
@@ -917,8 +917,8 @@ button{font-family:var(--font);cursor:pointer;font-size:13px;font-weight:600;bor
     --quote-paper-w:210mm;
     --quote-paper-h:297mm;
 
-    --quote-print-scale:0.92;
-    --quote-active-scale:0.92;
+    --quote-print-scale:0.90;
+    --quote-active-scale:0.90;
 
     --quote-view-w:193.2mm;
     --quote-view-h:273.24mm;
