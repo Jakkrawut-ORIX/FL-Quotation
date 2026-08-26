@@ -693,7 +693,15 @@ var assetQty = assetQtyRaw === ''
   setText('q_pmt_inc',fmt0(pmtRounded));setText('q_purchase',fmt2(purchaseOptionInc));
   setText('q_qty',assetQty.toString());setText('q_cust_sign',custName);
 
-  setText('rb_v1','Flat Rate');
+  const TH = $('quoteLang').value === 'TH';
+  const flatRateText = fmt2(getVal('flatRate'));
+
+setText(
+  'rb_v1',
+  TH
+    ? `${flatRateText}% Flat Rate`
+    : `${flatRateText}% Flat Rate`
+);
   setText('rb_v5',getGuarantorLabel(TH));
   setText('rb_v3',getPaymentLabel($('paymentMethod')?$('paymentMethod').value:'transfer',TH));
 
