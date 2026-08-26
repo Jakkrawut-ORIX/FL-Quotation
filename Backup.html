@@ -693,7 +693,15 @@ var assetQty = assetQtyRaw === ''
   setText('q_pmt_inc',fmt0(pmtRounded));setText('q_purchase',fmt2(purchaseOptionInc));
   setText('q_qty',assetQty.toString());setText('q_cust_sign',custName);
 
-  const flatRateText = fmt2(getVal('flatRate'));
+const TH = $('quoteLang').value === 'TH';
+const flatRateText = fmt2(getVal('flatRate'));
+
+setText(
+  'rb_v1',
+  TH
+    ? `อัตราดอกเบี้ยคงที่ ${flatRateText}% ต่อปี`
+    : `${flatRateText}% Flat Rate p.a.`
+);
 
 setText(
   'rb_v1',
